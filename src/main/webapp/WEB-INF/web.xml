@@ -6,7 +6,7 @@
   <display-name>Archetype Created Web Application</display-name>
   <servlet >
 	<servlet-name >MUD </servlet-name >
-	<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer </servlet-class >
+	<servlet-class>com.mackervoy.calum.mud.MUDServlet </servlet-class >
 	<init-param >
 		<param-name >com.sun.jersey.config.property.packages</param-name >
 		<param-value >com.mackervoy.calum.mud</param-value >

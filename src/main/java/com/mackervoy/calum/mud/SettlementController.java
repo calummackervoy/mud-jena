@@ -16,8 +16,7 @@ import com.mackervoy.calum.mud.MUDServlet;
 @Path("/settlements/")
 public class SettlementController {
     @GET
-    //@Produces("text/turtle")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces("text/turtle")
     public String getSettlements() {
     	Model m = ModelFactory.createDefaultModel();
         

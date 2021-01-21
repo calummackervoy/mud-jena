@@ -11,7 +11,7 @@ import javax.servlet.ServletException;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.VCARD;
+import org.apache.jena.vocabulary.VCARD4;
 
 import com.mackervoy.calum.mud.vocabularies.MUD;
 
@@ -31,22 +31,22 @@ public class MUDServlet extends com.sun.jersey.spi.container.servlet.ServletCont
 		//configuration data
 		Resource agora = ResourceFactory.createResource(local + "athens_agora");
 		model.add(agora, RDF.type, MUD.Building);
-		model.add(agora, VCARD.FN, "Agora");
+		model.add(agora, VCARD4.fn, "Agora");
 		
 		Resource ampitheatre = ResourceFactory.createResource(local + "athens_ampitheatre");
 		model.add(ampitheatre, RDF.type, MUD.Building);
-		model.add(ampitheatre, VCARD.FN, "Ampitheatre");
+		model.add(ampitheatre, VCARD4.fn, "Ampitheatre");
 		
 		Resource athens = ResourceFactory.createResource(local + "athens");
 		model.add(athens, RDF.type, MUD.Settlement);
-		model.add(athens, VCARD.FN, "Athens");
+		model.add(athens, VCARD4.fn, "Athens");
 		model.add(athens, MUD.population, "20000");
 		model.add(athens, MUD.hasBuilding, agora);
 		model.add(athens, MUD.hasBuilding, ampitheatre);
 		
 		Resource sparta = ResourceFactory.createResource(local + "sparta");
 		model.add(sparta, RDF.type, MUD.Settlement);
-		model.add(sparta, VCARD.FN, "Sparta");
+		model.add(sparta, VCARD4.fn, "Sparta");
 		model.add(sparta, MUD.population, "5000");
 		
 		FileWriter fis = new FileWriter(file);
@@ -75,7 +75,6 @@ public class MUDServlet extends com.sun.jersey.spi.container.servlet.ServletCont
 	}
 	
 	public void init() throws ServletException {
-		System.out.println("PATH is " + this.PATH);
 		this.initFiles();
 		super.init();
 	}

@@ -29,25 +29,30 @@ public class MUDServlet extends com.sun.jersey.spi.container.servlet.ServletCont
 		String local = "http://localhost:8080/#";
 		
 		//configuration data
-		Resource agora = ResourceFactory.createResource(local + "athens_agora");
-		model.add(agora, RDF.type, MUD.Building);
-		model.add(agora, VCARD4.fn, "Agora");
+		Resource stadium = ResourceFactory.createResource(local + "south_babylon_fc_stadium");
+		model.add(stadium, RDF.type, MUD.Building);
+		model.add(stadium, VCARD4.fn, "South Babylon Football Club Stadium");
+		Resource image = ResourceFactory.createResource("https://www.arthistoryabroad.com/wp-content/uploads/2013/08/LOWRY-Football-Match.jpg");
+		model.add(stadium, MUD.primaryImageContent, image);
+		model.add(stadium, MUD.primaryTextContent, "There is no game on right now");
 		
-		Resource ampitheatre = ResourceFactory.createResource(local + "athens_ampitheatre");
-		model.add(ampitheatre, RDF.type, MUD.Building);
-		model.add(ampitheatre, VCARD4.fn, "Ampitheatre");
+		Resource collective = ResourceFactory.createResource(local + "the_collective_night_club");
+		model.add(collective, RDF.type, MUD.Building);
+		model.add(collective, VCARD4.fn, "The Collective Night Club");
 		
-		Resource athens = ResourceFactory.createResource(local + "athens");
-		model.add(athens, RDF.type, MUD.Settlement);
-		model.add(athens, VCARD4.fn, "Athens");
-		model.add(athens, MUD.population, "20000");
-		model.add(athens, MUD.hasBuilding, agora);
-		model.add(athens, MUD.hasBuilding, ampitheatre);
+		Resource babylon = ResourceFactory.createResource(local + "babylon");
+		model.add(babylon, RDF.type, MUD.Settlement);
+		model.add(babylon, VCARD4.fn, "Babylon");
+		model.add(babylon, MUD.population, "8000000");
+		model.add(babylon, MUD.hasBuilding, stadium);
+		model.add(babylon, MUD.hasBuilding, collective);
+		model.add(babylon, MUD.primaryTextContent, "The Capital of the Babylonian Empire");
 		
-		Resource sparta = ResourceFactory.createResource(local + "sparta");
-		model.add(sparta, RDF.type, MUD.Settlement);
-		model.add(sparta, VCARD4.fn, "Sparta");
-		model.add(sparta, MUD.population, "5000");
+		Resource roric = ResourceFactory.createResource(local + "roric");
+		model.add(roric, RDF.type, MUD.Settlement);
+		model.add(roric, VCARD4.fn, "Roric");
+		model.add(roric, MUD.population, "1000000");
+		model.add(roric, MUD.primaryTextContent, "The Second City of the Babylon region, but a cosmopolis in its own right, and an industrial powerhouse");
 		
 		FileWriter fis = new FileWriter(file);
         model.write(fis, "Turtle");

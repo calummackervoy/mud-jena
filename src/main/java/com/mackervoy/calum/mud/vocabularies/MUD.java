@@ -30,4 +30,6 @@ public class MUD {
     public final static Property population = property( "population" );
     public final static Property ownedBy = property( "ownedBy" );
     public final static Property CharacterList = property( "CharacterList" );
+    public final static Property primaryTextContent = property("primaryTextContent");
+    public final static Property primaryImageContent = property("primaryImageContent");
 }

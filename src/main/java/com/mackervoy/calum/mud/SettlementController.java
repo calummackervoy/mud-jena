@@ -19,7 +19,7 @@ public class SettlementController {
     public String getSettlements() {
     	Model m = ModelFactory.createDefaultModel();
         
-    	m.read(MUDServlet.PATH);
+    	m.read(MUDApplication.PATH);
     		
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         

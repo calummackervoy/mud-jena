@@ -15,7 +15,7 @@ import org.apache.jena.vocabulary.VCARD4;
 
 import com.mackervoy.calum.mud.vocabularies.MUD;
 
-public class MUDServlet extends org.glassfish.jersey.servlet.ServletContainer {
+public class MUDApplication extends jakarta.ws.rs.core.Application {
 	//TODO: configuring permanent file storage (will probably be replaced by a triple data store later)
 	public final static String MUD_DIRECTORY = "./mud";
 	public final static String SETTLEMENTS_STORAGE = "settlements.ttl";
@@ -79,8 +79,7 @@ public class MUDServlet extends org.glassfish.jersey.servlet.ServletContainer {
         }
 	}
 	
-	public void init() throws ServletException {
+	public MUDApplication() {
 		this.initFiles();
-		super.init();
 	}
 }

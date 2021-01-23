@@ -15,7 +15,7 @@ import org.apache.jena.vocabulary.VCARD4;
 
 import com.mackervoy.calum.mud.vocabularies.MUD;
 
-public class MUDApplication extends jakarta.ws.rs.core.Application {
+public class MUDApplication extends javax.ws.rs.core.Application {
 	//TODO: configuring permanent file storage (will probably be replaced by a triple data store later)
 	public final static String MUD_DIRECTORY = "./mud";
 	public final static String SETTLEMENTS_STORAGE = "settlements.ttl";

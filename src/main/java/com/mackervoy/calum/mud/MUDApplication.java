@@ -21,9 +21,9 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	public final static String SETTLEMENTS_STORAGE = "settlements.ttl";
 	public final static String PATH = MUD_DIRECTORY + "/" + SETTLEMENTS_STORAGE;
 	
-	protected void initSettlement(File file) throws IOException {
+	protected static void initSettlement(File file) throws IOException {
 		Model model = ModelFactory.createDefaultModel() ;
-		model.read(this.PATH) ;
+		model.read(MUDApplication.PATH) ;
 		
 		// TODO: configuration needed here, in the web.xml ?
 		String local = "http://localhost:8080/#";
@@ -58,19 +58,19 @@ public class MUDApplication extends javax.ws.rs.core.Application {
         model.write(fis, "Turtle");
 	}
 	
-	protected void initFiles() {
-    	File directory = new File(this.MUD_DIRECTORY);
+	public static void initFiles() {
+    	File directory = new File(MUDApplication.MUD_DIRECTORY);
         if (! directory.exists()){
         	// NOTE: if you require it to make entire directory path including parents use mkdirs() method instead
             directory.mkdir();
         }
 
         
-        File file = new File(this.PATH);
+        File file = new File(MUDApplication.PATH);
         if (! file.exists()) {
         	try {
 	        	file.createNewFile();
-	        	this.initSettlement(file);
+	        	MUDApplication.initSettlement(file);
         	}
         	catch(java.io.IOException e) {
         		System.out.println("Error in creation of init file .mud/settlements.ttl");
@@ -80,6 +80,6 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	}
 	
 	public MUDApplication() {
-		this.initFiles();
+		MUDApplication.initFiles();
 	}
 }

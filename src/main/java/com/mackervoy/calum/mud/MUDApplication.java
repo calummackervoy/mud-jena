@@ -14,6 +14,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.VCARD4;
 
 import com.mackervoy.calum.mud.vocabularies.MUD;
+import com.mackervoy.calum.mud.content.*;
 
 public class MUDApplication extends javax.ws.rs.core.Application {
 	//TODO: configuring permanent file storage (will probably be replaced by a triple data store later)
@@ -26,7 +27,7 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		model.read(MUDApplication.PATH) ;
 		
 		// TODO: configuration needed here, in the web.xml ?
-		String local = "http://localhost:8080/#";
+		String local = "http://localhost:8080/mud/settlements/#";
 		
 		//configuration data
 		Resource stadium = ResourceFactory.createResource(local + "south_babylon_fc_stadium");
@@ -79,7 +80,15 @@ public class MUDApplication extends javax.ws.rs.core.Application {
         }
 	}
 	
+	/*
+	 * Configures Describer classes with the DescriberFactory
+	 */
+	public static void registerDescribers() {
+		new StadiumDescriber();
+	}
+	
 	public MUDApplication() {
 		MUDApplication.initFiles();
+		MUDApplication.registerDescribers();
 	}
 }

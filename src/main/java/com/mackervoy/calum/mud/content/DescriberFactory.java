@@ -3,8 +3,10 @@
  */
 package com.mackervoy.calum.mud.content;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.function.Supplier;
 
 /**
  * @author Calum Mackervoy
@@ -25,7 +27,16 @@ public class DescriberFactory {
 		return false;
 	}
 	
-	public Class<? extends IContentDescriber> getDescriber(String rdfType) {
-		return contentDescribers.get(rdfType);
+	public IContentDescriber getDescriber(String rdfType) {
+		Class<? extends IContentDescriber> describer = contentDescribers.get(rdfType);
+		if(describer == null) return null;
+		try {
+			return describer.getDeclaredConstructor().newInstance();
+		} catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException | IllegalAccessException | InstantiationException e) {
+			System.out.println("Error in DescriberFactory.getDescriber!");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

@@ -16,13 +16,13 @@ public class TestDescriberFactory {
 	
 	@Test
 	public void testGetRDFTypeOfStadiumDescriber() {
-		Class result = factory.getDescriber("helloworld");
+		IContentDescriber result = factory.getDescriber("helloworld");
 		Assert.assertNotNull(result);
 	}
 	
 	@Test
 	public void testGETRDFTypeDoesntExist() {
-		Class result = factory.getDescriber("idonotexist");
+		IContentDescriber result = factory.getDescriber("idonotexist");
 		Assert.assertNull(result);
 	}
 }

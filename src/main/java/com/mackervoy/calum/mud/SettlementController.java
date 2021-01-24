@@ -15,7 +15,6 @@ import org.apache.jena.rdf.model.*;
 public class SettlementController {
     @GET
     @Produces("text/turtle")
-    //@Produces(MediaType.TEXT_PLAIN)
     public String getSettlements() {
     	Model m = ModelFactory.createDefaultModel();
         

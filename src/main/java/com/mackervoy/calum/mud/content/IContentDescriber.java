@@ -11,5 +11,5 @@ import org.apache.jena.rdf.model.*;
  * It allows the implementing class to define rich content for a parameterised object
  */
 public interface IContentDescriber {
-	public String describe(Model obj);
+	public String describe(Model dataModel, String uri);
 }

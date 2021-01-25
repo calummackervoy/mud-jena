@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.servlet.ServletException;
 
@@ -23,12 +25,12 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	public final static String SETTLEMENTS_STORAGE = "settlements.ttl";
 	public final static String PATH = MUD_DIRECTORY + "/" + SETTLEMENTS_STORAGE;
 	
+	// TODO: configuration needed here, in the web.xml ?
+	public static String local = "http://localhost:8080/mud/settlements/#";
+	
 	protected static void initSettlement(File file) throws IOException {
 		Model model = ModelFactory.createDefaultModel() ;
 		model.read(MUDApplication.PATH) ;
-		
-		// TODO: configuration needed here, in the web.xml ?
-		String local = "http://localhost:8080/mud/settlements/#";
 		
 		// add a football stadium (South Babylon FC)
 		Resource stadium = ResourceFactory.createResource(local + "south_babylon_fc_stadium");
@@ -44,11 +46,12 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		
 		Resource matchBegins = ResourceFactory.createResource(local + "demo_football_match_begins");
 		model.add(matchBegins, RDF.type, Time.Instant);
-		model.add(matchBegins, Time.inXSDDateTimeStamp, new Timestamp(System.currentTimeMillis()).toString());
+		DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+		model.add(matchBegins, Time.inXSDDateTimeStamp, LocalDateTime.now().format(formatter));
 		
 		Resource matchEnds = ResourceFactory.createResource(local + "demo_football_match_ends");
 		model.add(matchEnds, RDF.type, Time.Instant);
-		model.add(matchEnds, Time.inXSDDateTimeStamp, new Timestamp(System.currentTimeMillis() + 7200000).toString());
+		model.add(matchEnds, Time.inXSDDateTimeStamp, LocalDateTime.now().plusHours(2).format(formatter));
 		model.add(match, Time.hasBeginning, matchBegins);
 		model.add(match, Time.hasEnd, matchEnds);
 		

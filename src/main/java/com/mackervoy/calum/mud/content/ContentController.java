@@ -34,17 +34,6 @@ public class ContentController {
 		// bounds checking - could provide a catch-all describer this way
 		if(uri == null) uri = "";
 		
-		// decode uri parameter
-		System.out.println("pre-decode the uri parameter is " + uri);
-		/*try {
-			uri = URLDecoder.decode(uri, StandardCharsets.UTF_8.toString());
-			System.out.println(uri);
-		} catch (UnsupportedEncodingException e) {
-			//TODO: return 400 error
-			System.out.println("Error decoding URI");
-			e.printStackTrace();
-		}*/
-		
 		// check if I have a describer for the URI
 		DescriberFactory factory = new DescriberFactory();
 		IContentDescriber describer = factory.getDescriber(uri);

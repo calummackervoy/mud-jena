@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Assert;
 
 import com.mackervoy.calum.mud.MUDApplication;
+import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
 
 public class TestDescriberFactory {
 	DescriberFactory factory = new DescriberFactory();
@@ -16,7 +17,7 @@ public class TestDescriberFactory {
 	
 	@Test
 	public void testGetRDFTypeOfStadiumDescriber() {
-		IContentDescriber result = factory.getDescriber("helloworld");
+		IContentDescriber result = factory.getDescriber(MUDBuildings.Stadium.toString());
 		Assert.assertNotNull(result);
 	}
 	

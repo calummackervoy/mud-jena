@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Timestamp;
 
 import javax.servlet.ServletException;
 
@@ -13,7 +14,7 @@ import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.VCARD4;
 
-import com.mackervoy.calum.mud.vocabularies.MUD;
+import com.mackervoy.calum.mud.vocabularies.*;
 import com.mackervoy.calum.mud.content.*;
 
 public class MUDApplication extends javax.ws.rs.core.Application {
@@ -29,16 +30,33 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		// TODO: configuration needed here, in the web.xml ?
 		String local = "http://localhost:8080/mud/settlements/#";
 		
-		//configuration data
+		// add a football stadium (South Babylon FC)
 		Resource stadium = ResourceFactory.createResource(local + "south_babylon_fc_stadium");
-		model.add(stadium, RDF.type, MUD.Building);
+		model.add(stadium, RDF.type, MUDBuildings.Stadium);
 		model.add(stadium, VCARD4.fn, "South Babylon Football Club Stadium");
 		Resource image = ResourceFactory.createResource("https://www.arthistoryabroad.com/wp-content/uploads/2013/08/LOWRY-Football-Match.jpg");
 		model.add(stadium, MUD.primaryImageContent, image);
-		model.add(stadium, MUD.primaryTextContent, "There is no game on right now");
+		model.add(stadium, MUD.primaryTextContent, "A towering brickwork structure of an industrial appearance");
 		
+		// there's a match at the stadium
+		Resource match = ResourceFactory.createResource(local + "demo_football_match");
+		model.add(match, RDF.type, MUDEvents.FootballMatch);
+		
+		Resource matchBegins = ResourceFactory.createResource(local + "demo_football_match_begins");
+		model.add(matchBegins, RDF.type, Time.Instant);
+		model.add(matchBegins, Time.inXSDDateTimeStamp, new Timestamp(System.currentTimeMillis()).toString());
+		
+		Resource matchEnds = ResourceFactory.createResource(local + "demo_football_match_ends");
+		model.add(matchEnds, RDF.type, Time.Instant);
+		model.add(matchEnds, Time.inXSDDateTimeStamp, new Timestamp(System.currentTimeMillis() + 7200000).toString());
+		model.add(match, Time.hasBeginning, matchBegins);
+		model.add(match, Time.hasEnd, matchEnds);
+		
+		model.add(stadium, MUDEvents.hasEvent, match);
+		
+		// add a night club in Babylon
 		Resource collective = ResourceFactory.createResource(local + "the_collective_night_club");
-		model.add(collective, RDF.type, MUD.Building);
+		model.add(collective, RDF.type, MUDBuildings.Nightclub);
 		model.add(collective, VCARD4.fn, "The Collective Night Club");
 		
 		Resource babylon = ResourceFactory.createResource(local + "babylon");

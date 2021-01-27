@@ -9,10 +9,10 @@ import org.apache.jena.rdf.model.ResourceFactory;
 
 /**
  * @author Calum Mackervoy
- * Class for accessing Resources and Properties of the MUDEvents ontology as constants
+ * Class for accessing Resources and Properties of the MUDLogic ontology as constants
  */
-public class MUDEvents {
-	public static final String uri ="https://calum.inrupt.net/public/voc/mudevents.ttl#";
+public class MUDLogic {
+	public static final String uri ="https://calum.inrupt.net/public/voc/mudlogic.ttl#";
 	
 	/** returns the URI for this schema
      * @return the URI for this schema
@@ -27,7 +27,9 @@ public class MUDEvents {
     protected static final Property property( String local )
     { return ResourceFactory.createProperty( uri, local ); }
     
-    public final static Resource Event = resource( "Event" );
-    public final static Resource FootballMatch = resource( "FootballMatch" );
-    public final static Property hasEvent = property( "hasEvent" );
+    public final static Resource Action = resource( "Action" );
+    public final static Resource Task = resource( "Task" );
+    public final static Resource Transit = resource( "Transit" );
+    public final static Property endState = property( "endState" );    
+
 }

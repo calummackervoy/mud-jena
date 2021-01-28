@@ -9,20 +9,24 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.tdb2.TDB2Factory;
 
 @Path("/settlements/")
 public class SettlementController {
     @GET
     @Produces("text/turtle")
     public String getSettlements() {
-    	Model m = ModelFactory.createDefaultModel();
-        
-    	m.read(MUDApplication.PATH);
-    		
+    	Dataset dataset = TDB2Factory.connectDataset(MUDApplication.WORLD_DATASET) ;
+    	dataset.begin(ReadWrite.READ) ;
+	    Model m = dataset.getDefaultModel() ;
+	        		
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
         m.write(baos, "Turtle");
+        dataset.end();
     	
         return baos.toString();
     }

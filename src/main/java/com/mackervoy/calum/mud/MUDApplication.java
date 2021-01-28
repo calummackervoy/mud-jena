@@ -11,8 +11,15 @@ import java.time.format.DateTimeFormatter;
 
 import javax.servlet.ServletException;
 
+import org.apache.jena.assembler.JA;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.vocabulary.FOAF;
+import org.apache.jena.system.Txn;
+import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.VCARD4;
 
@@ -24,12 +31,16 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	public final static String MUD_DIRECTORY = "./mud";
 	public final static String SETTLEMENTS_STORAGE = "settlements.ttl";
 	public final static String PATH = MUD_DIRECTORY + "/" + SETTLEMENTS_STORAGE;
+	public final static String WORLD_DATASET = MUD_DIRECTORY + "/World";
 	
 	// TODO: configuration needed here, in the web.xml ?
 	public static String local = "http://localhost:8080/mud/settlements/#";
 	
-	protected static void initSettlement(File file) throws IOException {
-		Model model = ModelFactory.createDefaultModel() ;
+	protected static void initSettlement() {
+		// Make a TDB-backed dataset
+		Dataset dataset = TDB2Factory.createDataset(MUDApplication.WORLD_DATASET) ;
+		dataset.begin(ReadWrite.WRITE) ;
+	    Model model = dataset.getDefaultModel() ;
 		model.read(MUDApplication.PATH) ;
 		
 		// add a football stadium (South Babylon FC)
@@ -76,8 +87,8 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		model.add(roric, MUD.population, "1000000");
 		model.add(roric, MUD.primaryTextContent, "The Second City of the Babylon region, but a cosmopolis in its own right, and an industrial powerhouse");
 		
-		FileWriter fis = new FileWriter(file);
-        model.write(fis, "Turtle");
+		model.commit();
+	    dataset.end();
 	}
 	
 	public static void initFiles() {
@@ -87,18 +98,22 @@ public class MUDApplication extends javax.ws.rs.core.Application {
             directory.mkdir();
         }
 
-        
-        File file = new File(MUDApplication.PATH);
-        if (! file.exists()) {
-        	try {
-	        	file.createNewFile();
-	        	MUDApplication.initSettlement(file);
-        	}
-        	catch(java.io.IOException e) {
-        		System.out.println("Error in creation of init file .mud/settlements.ttl");
-        		e.printStackTrace();
-        	}
-        }
+        MUDApplication.initSettlement();
+	}
+	
+	/**
+	 * init a TDB server storing world from configuration in Assembler
+	 * https://jena.apache.org/documentation/tdb/java_api.html
+	 */
+	public static void initWorld() {
+		MUDApplication.initFiles();
+		
+		// TODO: we want to use Assembler method
+		//  commented out because was having 404 on the Jena vocab
+		//  on both http://jena.hpl.hp.com/2005/11/Assembler
+		//  and http://jena.apache.org/2016/tdb
+		/*String assemblerFile = "mud/templates/assembler.ttl" ;
+		Dataset dataset = TDB2Factory.assembleDataset(assemblerFile) ;*/
 	}
 	
 	/*
@@ -109,7 +124,7 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	}
 	
 	public MUDApplication() {
-		MUDApplication.initFiles();
+		MUDApplication.initWorld();
 		MUDApplication.registerDescribers();
 	}
 }

@@ -32,9 +32,12 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	public final static String SETTLEMENTS_STORAGE = "settlements.ttl";
 	public final static String PATH = MUD_DIRECTORY + "/" + SETTLEMENTS_STORAGE;
 	public final static String WORLD_DATASET = MUD_DIRECTORY + "/World";
+	public final static String ACTION_DATASET = MUD_DIRECTORY + "/Action";
 	
 	// TODO: configuration needed here, in the web.xml ?
-	public static String local = "http://localhost:8080/mud/settlements/#";
+	public static String WEB_HOST = "http://localhost:8080/mud/";
+	public static String TASK_LOCAL = WEB_HOST + "tasks/#";
+	public static String local = WEB_HOST + "settlements/#";
 	
 	protected static void initSettlement() {
 		// Make a TDB-backed dataset
@@ -116,6 +119,14 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		Dataset dataset = TDB2Factory.assembleDataset(assemblerFile) ;*/
 	}
 	
+	public static void initActions() {
+		Dataset dataset = TDB2Factory.createDataset(MUDApplication.ACTION_DATASET) ;
+		dataset.begin(ReadWrite.WRITE) ;
+		Model model = dataset.getDefaultModel() ;
+		model.commit();
+		dataset.end();
+	}
+	
 	/*
 	 * Configures Describer classes with the DescriberFactory
 	 */
@@ -125,6 +136,7 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	
 	public MUDApplication() {
 		MUDApplication.initWorld();
+		MUDApplication.initActions();
 		MUDApplication.registerDescribers();
 	}
 }

@@ -25,6 +25,7 @@ import com.mackervoy.calum.mud.MUDApplication;
 import com.mackervoy.calum.mud.Random;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 import com.mackervoy.calum.mud.vocabularies.MUDEvents;
+import com.mackervoy.calum.mud.vocabularies.MUDLogic;
 import com.mackervoy.calum.mud.vocabularies.Time;
 import com.mackervoy.calum.mud.vocabularies.SolidTerms;
 
@@ -38,7 +39,7 @@ public class TransitController extends AbstractTaskController {
 	//TODO: endpoint for user to finish the task
 	
 	//TODO: documentation
-	protected Model appendCharacterPatch(Model out, Resource character, Resource destination) {
+	protected Resource getCharacterPatch(Model out, Resource character, Resource destination) {
 		//create a solid:Patch to represent the transit location change
 		Resource endState = ResourceFactory.createResource(this.getRandomLocalUrl());
 		out.add(endState, RDF.type, SolidTerms.Patch);
@@ -58,11 +59,16 @@ public class TransitController extends AbstractTaskController {
 		//SolidTerms.inserts points to our Graph as a Node
 		//this makes the output in N3 format (allows us reference a Graph in a triple)
 		System.out.println("adding inserts graph");
+		/*Triple t = Triple.create(endState.asNode(), SolidTerms.inserts.asNode(), 
+				NodeFactory.createGraphNode(inserts.getGraph()));*/
+		//out.add(out.asResource(t));
+		
 		out.add(endState, SolidTerms.inserts, 
 				out.asRDFNode(NodeFactory.createGraphNode(inserts.getGraph())));
+		
 		System.out.println("done adding inserts");
 		
-		return out;
+		return endState;
 	}
 	
 	//TODO: documentation
@@ -84,56 +90,69 @@ public class TransitController extends AbstractTaskController {
 		return out;
 	}
 	
+	protected Resource getFirstDestinationFromModel(Model request) {
+		ResIterator destinations = request.listResourcesWithProperty(RDF.type, MUD.Locatable);
+		Resource destination = destinations.next();
+		if(destination == null) {
+			System.out.println("Error! No destination given in request");
+			throw new NullPointerException("A mud:Locatable object must be passed as a destination");
+		}
+		return destination;
+	}
+	
+	protected Model getModelForCharacterPatches(Model out, Model request, Resource transit, Resource destination) {
+		ResIterator characters = request.listResourcesWithProperty(RDF.type, MUD.Character);
+		
+		// append a Task for each Character in the list
+		while(characters.hasNext()) {
+			out.add(transit, MUDLogic.endState, this.getCharacterPatch(out, characters.next(), destination));
+			System.out.println("appended a Patch");
+		}
+		return out;
+	}
+	
 	@POST
     @Produces("text/turtle")
     public String getTransit(String requestBody) {
-		Model model = null;
-		
-		System.out.println(requestBody);
+		//read the request data
 		Model request = ModelFactory.createDefaultModel();
 		request.read(new StringReader(requestBody), "", "TURTLE");
-		System.out.println("read requestBody successfully");
 		
+		//get the location from the request
+		Resource destination = this.getFirstDestinationFromModel(request);
+		
+		// the transit task is a time:Interval, so it should have a start & end
+		Model model = ModelFactory.createDefaultModel();
+		Resource transit = ResourceFactory.createResource(this.getRandomLocalUrl());
+		model.add(transit, RDF.type, MUDLogic.Transit);
+		model = this.addIntervalProperties(model, transit);
+		
+		//append endState changes for the Task, for each character
+		model = this.getModelForCharacterPatches(model, request, transit, destination);
+		
+		System.out.println("done.");
+		
+		// commit to TDB
+		Model out = null;
 		Dataset dataset = TDB2Factory.connectDataset(MUDApplication.ACTION_DATASET);
 		System.out.println("connected to dataset");
-		try {
+		/*try {
 			dataset.begin(ReadWrite.WRITE);
-			model = dataset.getDefaultModel();
+			out = dataset.getDefaultModel();
 			
-			Resource transit = ResourceFactory.createResource(this.getRandomLocalUrl());
-			
-			//get the location from the request
-			//if it includes mutliple, just get the first
-			ResIterator destinations = request.listResourcesWithProperty(RDF.type, MUD.Locatable);
-			Resource destination = destinations.next();
-			if(destination == null) {
-				System.out.println("Error! No destination given in request");
-				throw new NullPointerException("A mud:Locatable object must be passed as a destination");
-			}
-				
-			//get the character from the request and set this to the patches property
-			ResIterator characters = request.listResourcesWithProperty(RDF.type, MUD.Character);
-			
-			// append a Task for each Character in the list
-			while(characters.hasNext()) {
-				model = this.appendCharacterPatch(model, characters.next(), destination);
-			}
-			
-			// the transit task is a time:Interval, so it should have a start & end
-			model = this.addIntervalProperties(model, transit);
-			
-			System.out.println("done.");
-			System.out.println(model.toString());
-			
-			// write the task to TDB
-			model.commit();
+			//needs to be committed first because of some write operations completed when adding
+			//the graph node (getModelForCharacterPatches), throwing a Transaction related exception
+			//transit is added just before so that there's something to commit
+			out.commit();
+			//out.add(model);
+			out.commit();
 		}
 		finally {
 			dataset.end();
-		}
+		}*/
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if(model != null) model.write(baos, "Turtle");
+        if(model != null) model.write(baos, "n3");
     	
         return baos.toString();
     }

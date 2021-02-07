@@ -41,7 +41,6 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		Dataset dataset = TDB2Factory.createDataset(MUDApplication.WORLD_DATASET) ;
 		dataset.begin(ReadWrite.WRITE) ;
 	    Model model = dataset.getDefaultModel() ;
-		model.read(MUDApplication.PATH) ;
 		
 		// add a football stadium (South Babylon FC)
 		Resource stadium = ResourceFactory.createResource(local + "south_babylon_fc_stadium");

@@ -71,7 +71,7 @@ docker build . -t mud-jena:<branch>
 
 To run the image, simply bind port 8080 to a local port:
 ```
-docker run -p 8080:8080  mud-jena:master
+docker run -p 8080:8080  mud-jena:<branch>
 ```
 
 # Deploying to a production Tomcat server

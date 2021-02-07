@@ -62,6 +62,18 @@ The file **pom.xml** holds the Maven dependencies for the project
 
 We use JUnit tests (and sometimes the Jersey extension `JerseyTest`)
 
+# Docker
+
+You can build and run the application using the Dockerfile. Building the image requires no specific build args, so can be done simply with:
+```
+docker build . -t mud-jena:<branch>
+```
+
+To run the image, simply bind port 8080 to a local port:
+```
+docker run -p 8080:8080  mud-jena:master
+```
+
 # Deploying to a production Tomcat server
 
 * In Eclipse, in the Project Explorer, right-click on the MUD project name and select Export / WAR file

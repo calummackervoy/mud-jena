@@ -6,9 +6,11 @@ ADD pom.xml pom.xml
 
 RUN mvn clean
 
+RUN mvn dependency:go-offline
+
 ADD src/main src/main
 
-RUN mvn install 
+RUN mvn package 
 
 FROM tomcat:9.0.43-jdk11 as server
 

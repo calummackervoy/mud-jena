@@ -41,7 +41,7 @@ public class TransitController extends AbstractTaskController {
 	//TODO: documentation
 	protected Resource getCharacterPatch(Model out, Resource character, Resource destination) {
 		//create a solid:Patch to represent the transit location change
-		Resource endState = ResourceFactory.createResource(this.getRandomLocalUrl());
+		Resource endState = ResourceFactory.createResource(this.getRandomLocalUrl("endState"));
 		out.add(endState, RDF.type, SolidTerms.Patch);
 		
 		out.add(endState, SolidTerms.patches, character);
@@ -51,7 +51,7 @@ public class TransitController extends AbstractTaskController {
 		System.out.println("TODO here.. character url is " + character.toString());
 		
 		//represent the inserted Character
-		Resource characterInsert = ResourceFactory.createResource(this.getRandomLocalUrl());
+		Resource characterInsert = ResourceFactory.createResource(this.getRandomLocalUrl("characterInsert"));
 		out.add(characterInsert, MUD.locatedAt, destination);
 		out.add(endState, MUDLogic.inserts, characterInsert);
 		
@@ -70,12 +70,12 @@ public class TransitController extends AbstractTaskController {
 	//TODO: documentation
 	protected Model addIntervalProperties(Model out, Resource transit) {
 		//create the task beginning and end instants
-		Resource taskBegins = ResourceFactory.createResource(this.getRandomLocalUrl());
+		Resource taskBegins = ResourceFactory.createResource(this.getRandomLocalUrl("instant"));
 		out.add(taskBegins, RDF.type, Time.Instant);
 		DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 		out.add(taskBegins, Time.inXSDDateTimeStamp, LocalDateTime.now().format(formatter));
 		
-		Resource taskEnds = ResourceFactory.createResource(this.getRandomLocalUrl());
+		Resource taskEnds = ResourceFactory.createResource(this.getRandomLocalUrl("instant"));
 		out.add(taskEnds, RDF.type, Time.Instant);
 		out.add(taskEnds, Time.inXSDDateTimeStamp, LocalDateTime.now().plusHours(2).format(formatter));
 
@@ -119,7 +119,7 @@ public class TransitController extends AbstractTaskController {
 		
 		// the transit task is a time:Interval, so it should have a start & end
 		Model model = ModelFactory.createDefaultModel();
-		Resource transit = ResourceFactory.createResource(this.getRandomLocalUrl());
+		Resource transit = ResourceFactory.createResource(this.getRandomLocalUrl("tasks"));
 		model.add(transit, RDF.type, MUDLogic.Transit);
 		model = this.addIntervalProperties(model, transit);
 		

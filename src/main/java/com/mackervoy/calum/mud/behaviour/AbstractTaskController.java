@@ -24,8 +24,8 @@ public abstract class AbstractTaskController implements ITaskActor {
 	/**
 	 * @return the MUDApplication.LOCAL_TASK + random uuid
 	 */
-	protected String getRandomLocalUrl() {
-		return MUDApplication.TASK_LOCAL + Random.getRandomUUIDString();
+	protected String getRandomLocalUrl(String path) {
+		return MUDApplication.WEB_HOST + path + "/#" + Random.getRandomUUIDString();
 	}
 	
 	/**

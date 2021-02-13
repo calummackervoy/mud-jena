@@ -46,27 +46,23 @@ public class TransitController extends AbstractTaskController {
 		
 		out.add(endState, SolidTerms.patches, character);
 		
-		//TODO: build Graph which should be deleted from the requested Character
+		//TODO: build deleted Character
 		//delete that the character has an old location
 		System.out.println("TODO here.. character url is " + character.toString());
 		
-		//build Graph which should be inserted from the requested destination
-		Model inserts = ModelFactory.createDefaultModel();
-		
-		//insert that the character has a new location
-		inserts.add(character, MUD.locatedAt, destination);
+		//represent the inserted Character
+		Resource characterInsert = ResourceFactory.createResource(this.getRandomLocalUrl());
+		out.add(characterInsert, MUD.locatedAt, destination);
+		out.add(endState, MUDLogic.inserts, characterInsert);
 		
 		//SolidTerms.inserts points to our Graph as a Node
 		//this makes the output in N3 format (allows us reference a Graph in a triple)
-		System.out.println("adding inserts graph");
 		/*Triple t = Triple.create(endState.asNode(), SolidTerms.inserts.asNode(), 
 				NodeFactory.createGraphNode(inserts.getGraph()));*/
 		//out.add(out.asResource(t));
 		
-		out.add(endState, SolidTerms.inserts, 
-				out.asRDFNode(NodeFactory.createGraphNode(inserts.getGraph())));
-		
-		System.out.println("done adding inserts");
+		/*out.add(endState, SolidTerms.inserts, 
+				out.asRDFNode(NodeFactory.createGraphNode(inserts.getGraph())));*/
 		
 		return endState;
 	}

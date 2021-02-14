@@ -7,7 +7,7 @@ import org.apache.jena.rdf.model.* ;
  */
 
 public class MUD {
-	public static final String uri ="https://calum.inrupt.net/public/voc/mud.ttl#";
+	public static final String uri ="https://raw.githubusercontent.com/MattTennison/vocab/content-types/mud.ttl#";
 	
 	/** returns the URI for this schema
      * @return the URI for this schema
@@ -28,6 +28,7 @@ public class MUD {
     public final static Resource Building = resource( "Building" );
     public final static Resource Party = resource( "Party" );
     public final static Resource Character = resource( "Character" );
+    public final static Resource Senses = resource( "Senses" );
     public final static Property locatedAt = property( "locatedAt" );
     public final static Property hasBuilding = property( "hasBuilding" );
     public final static Property population = property( "population" );
@@ -36,4 +37,5 @@ public class MUD {
     public final static Property CharacterList = property( "CharacterList" );
     public final static Property primaryTextContent = property("primaryTextContent");
     public final static Property primaryImageContent = property("primaryImageContent");
+    public final static Property sight = property("sight");
 }

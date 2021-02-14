@@ -3,21 +3,19 @@
  */
 package com.mackervoy.calum.mud.content;
 
-import com.mackervoy.calum.mud.MUDApplication;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import com.mackervoy.calum.mud.vocabularies.MUD;
+
+import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.RDF;
 
 /**
@@ -28,7 +26,7 @@ import org.apache.jena.vocabulary.RDF;
 @Path("/content/")
 public class ContentController {
   @GET
-  @Produces(MediaType.TEXT_PLAIN)
+  @Produces("text/turtle")
   public String getContent(@QueryParam("uri") String uri) {
 		final String safeUri = uri == null ? "" : uri;
 		final Model m = ModelFactory.createDefaultModel();
@@ -36,6 +34,8 @@ public class ContentController {
 
 		return getDescriber(safeUri, m)
 			.map(describer -> describer.describe(m, safeUri))
+      .map(description -> descriptionToSensesModel(description))
+      .map(senseModel -> modelToTurtle(senseModel))
 			.orElse(null);
   }
 	
@@ -52,5 +52,18 @@ public class ContentController {
     }
 
 		return Optional.ofNullable(describer);
-	}
+  }
+
+  private Model descriptionToSensesModel(String visualDescription) {
+    Model m = ModelFactory.createDefaultModel();
+    Resource senses = ResourceFactory.createResource("http://localhost:8080/mud/content/#senses"); // not sure what this ought to be
+    m.add(senses, MUD.sight, visualDescription);
+    return m;
+  }
+
+  private String modelToTurtle(Model m) {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    m.write(baos, "Turtle");
+    return baos.toString();
+  }
 }

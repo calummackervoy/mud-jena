@@ -12,7 +12,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
  * Class for accessing Resources and Properties of the MUDEvents ontology as constants
  */
 public class MUDEvents {
-	public static final String uri ="https://calum.inrupt.net/public/voc/mudevents.ttl#";
+	public static final String uri ="https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mudevents.ttl#";
 	
 	/** returns the URI for this schema
      * @return the URI for this schema

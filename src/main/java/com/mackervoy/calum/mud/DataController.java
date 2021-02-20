@@ -25,6 +25,7 @@ public class DataController {
     @Produces("text/turtle")
 	@Path("/{dataset}/")
     public String get(@PathParam("dataset") String datasetSubPath) {
+		//TODO: check if the dataset exists and return 404 if not (rather than creating an empty one on each 'not found' request
     	Dataset dataset = TDB2Factory.connectDataset(MUDApplication.MUD_DIRECTORY + "/" + datasetSubPath) ;
     	dataset.begin(ReadWrite.READ) ;
 	    Model m = dataset.getDefaultModel() ;

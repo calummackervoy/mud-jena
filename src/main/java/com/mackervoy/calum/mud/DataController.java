@@ -26,7 +26,10 @@ public class DataController {
 	@Path("/{dataset}/")
     public String get(@PathParam("dataset") String datasetSubPath) {
 		//TODO: check if the dataset exists and return 404 if not (rather than creating an empty one on each 'not found' request
-    	Dataset dataset = TDB2Factory.connectDataset(MUDApplication.MUD_DIRECTORY + "/" + datasetSubPath) ;
+		//	in TDB1 you would use inUseLocation(..) but this is not provided by the TDB2Factory (needs research)
+		String datasetPath = DatasetFileStorageManager.getFileLocation(datasetSubPath);
+    	Dataset dataset = TDB2Factory.connectDataset(datasetPath);
+    	
     	dataset.begin(ReadWrite.READ) ;
 	    Model m = dataset.getDefaultModel() ;
 	        		

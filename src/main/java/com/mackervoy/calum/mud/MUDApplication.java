@@ -27,26 +27,15 @@ import com.mackervoy.calum.mud.vocabularies.*;
 import com.mackervoy.calum.mud.content.*;
 
 public class MUDApplication extends javax.ws.rs.core.Application {
-	//TODO: configuring permanent file storage (will probably be replaced by a triple data store later)
-	public final static String MUD_DIRECTORY = "./mud";
-	public final static String SETTLEMENTS_STORAGE = "settlements.ttl";
-	public final static String PATH = MUD_DIRECTORY + "/" + SETTLEMENTS_STORAGE;
-	public final static String WORLD_DATASET = MUD_DIRECTORY + "/World";
-	public final static String ACTION_DATASET = MUD_DIRECTORY + "/Action";
-	
-	// TODO: configuration needed here, in the web.xml ?
-	public static String WEB_HOST = "http://localhost:8080/mud/";
-	public static String TASK_LOCAL = WEB_HOST + "tasks/#";
-	public static String local = WEB_HOST + "settlements/#";
 	
 	protected static void initSettlement() {
 		// Make a TDB-backed dataset
-		Dataset dataset = TDB2Factory.createDataset(MUDApplication.WORLD_DATASET) ;
+		Dataset dataset = TDB2Factory.connectDataset(DatasetFileStorageManager.getWorldFileLocation()) ;
 		dataset.begin(ReadWrite.WRITE) ;
 	    Model model = dataset.getDefaultModel() ;
 		
 		// add a football stadium (South Babylon FC)
-		Resource stadium = ResourceFactory.createResource(local + "south_babylon_fc_stadium");
+		Resource stadium = ResourceFactory.createResource(DatasetFileStorageManager.getWorldUrlId("south_babylon_fc_stadium"));
 		model.add(stadium, RDF.type, MUDBuildings.Stadium);
 		model.add(stadium, VCARD4.fn, "South Babylon Football Club Stadium");
 		Resource image = ResourceFactory.createResource("https://www.arthistoryabroad.com/wp-content/uploads/2013/08/LOWRY-Football-Match.jpg");
@@ -54,15 +43,15 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		model.add(stadium, MUD.primaryTextContent, "A towering brickwork structure of an industrial appearance");
 		
 		// there's a match at the stadium
-		Resource match = ResourceFactory.createResource(local + "demo_football_match");
+		Resource match = ResourceFactory.createResource(DatasetFileStorageManager.getWorldUrlId("demo_football_match"));
 		model.add(match, RDF.type, MUDEvents.FootballMatch);
 		
-		Resource matchBegins = ResourceFactory.createResource(local + "demo_football_match_begins");
+		Resource matchBegins = ResourceFactory.createResource(DatasetFileStorageManager.getWorldUrlId("demo_football_match_begins"));
 		model.add(matchBegins, RDF.type, Time.Instant);
 		DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 		model.add(matchBegins, Time.inXSDDateTimeStamp, LocalDateTime.now().format(formatter));
 		
-		Resource matchEnds = ResourceFactory.createResource(local + "demo_football_match_ends");
+		Resource matchEnds = ResourceFactory.createResource(DatasetFileStorageManager.getWorldUrlId("demo_football_match_ends"));
 		model.add(matchEnds, RDF.type, Time.Instant);
 		model.add(matchEnds, Time.inXSDDateTimeStamp, LocalDateTime.now().plusHours(2).format(formatter));
 		model.add(match, Time.hasBeginning, matchBegins);
@@ -71,11 +60,11 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		model.add(stadium, MUDEvents.hasEvent, match);
 		
 		// add a night club in Babylon
-		Resource collective = ResourceFactory.createResource(local + "the_collective_night_club");
+		Resource collective = ResourceFactory.createResource(DatasetFileStorageManager.getWorldUrlId("the_collective_night_club"));
 		model.add(collective, RDF.type, MUDBuildings.Nightclub);
 		model.add(collective, VCARD4.fn, "The Collective Night Club");
 		
-		Resource babylon = ResourceFactory.createResource(local + "babylon");
+		Resource babylon = ResourceFactory.createResource(DatasetFileStorageManager.getWorldUrlId("babylon"));
 		model.add(babylon, RDF.type, MUD.Settlement);
 		model.add(babylon, VCARD4.fn, "Babylon");
 		model.add(babylon, MUD.population, "8000000");
@@ -83,7 +72,7 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		model.add(babylon, MUD.hasBuilding, collective);
 		model.add(babylon, MUD.primaryTextContent, "The Capital of the Babylonian Empire");
 		
-		Resource roric = ResourceFactory.createResource(local + "roric");
+		Resource roric = ResourceFactory.createResource(DatasetFileStorageManager.getWorldUrlId("roric"));
 		model.add(roric, RDF.type, MUD.Settlement);
 		model.add(roric, VCARD4.fn, "Roric");
 		model.add(roric, MUD.population, "1000000");
@@ -93,22 +82,13 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	    dataset.end();
 	}
 	
-	public static void initFiles() {
-    	File directory = new File(MUDApplication.MUD_DIRECTORY);
-        if (! directory.exists()){
-        	// NOTE: if you require it to make entire directory path including parents use mkdirs() method instead
-            directory.mkdir();
-        }
-
-        MUDApplication.initSettlement();
-	}
-	
 	/**
 	 * init a TDB server storing world from configuration in Assembler
 	 * https://jena.apache.org/documentation/tdb/java_api.html
 	 */
 	public static void initWorld() {
-		MUDApplication.initFiles();
+		DatasetFileStorageManager.init();
+        MUDApplication.initSettlement();
 		
 		// TODO: we want to use Assembler method
 		//  commented out because was having 404 on the Jena vocab
@@ -116,14 +96,6 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		//  and http://jena.apache.org/2016/tdb
 		/*String assemblerFile = "mud/templates/assembler.ttl" ;
 		Dataset dataset = TDB2Factory.assembleDataset(assemblerFile) ;*/
-	}
-	
-	public static void initActions() {
-		Dataset dataset = TDB2Factory.createDataset(MUDApplication.ACTION_DATASET) ;
-		dataset.begin(ReadWrite.WRITE) ;
-		Model model = dataset.getDefaultModel() ;
-		model.commit();
-		dataset.end();
 	}
 	
 	/*
@@ -135,7 +107,6 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	
 	public MUDApplication() {
 		MUDApplication.initWorld();
-		MUDApplication.initActions();
 		MUDApplication.registerDescribers();
 	}
 }

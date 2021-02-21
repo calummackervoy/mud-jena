@@ -1,7 +1,11 @@
 /**
  * 
  */
-package com.mackervoy.calum.mud.behaviour;
+package com.mackervoy.calum.mud.behaviour.task;
+
+import javax.ws.rs.core.Response;
+
+import org.apache.jena.rdf.model.Model;
 
 /**
  * @author Calum Mackervoy
@@ -10,5 +14,6 @@ package com.mackervoy.calum.mud.behaviour;
  * of consequences are carried out to datasets
  */
 public interface ITaskActor {
-
+	public Response act(Model request);
+	public boolean complete(String uri);
 }

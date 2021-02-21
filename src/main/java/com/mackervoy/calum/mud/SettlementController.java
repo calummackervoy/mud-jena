@@ -19,7 +19,7 @@ public class SettlementController {
     @GET
     @Produces("text/turtle")
     public String getSettlements() {
-    	Dataset dataset = TDB2Factory.connectDataset(DatasetFileStorageManager.getWorldFileLocation()) ;
+    	Dataset dataset = TDB2Factory.connectDataset(TDBStore.WORLD.getFileLocation()) ;
     	dataset.begin(ReadWrite.READ) ;
 	    Model m = dataset.getDefaultModel() ;
 	        		

@@ -27,7 +27,8 @@ public class DataController {
     public String get(@PathParam("dataset") String datasetSubPath) {
 		//TODO: check if the dataset exists and return 404 if not (rather than creating an empty one on each 'not found' request
 		//	in TDB1 you would use inUseLocation(..) but this is not provided by the TDB2Factory (needs research)
-		String datasetPath = DatasetFileStorageManager.getFileLocation(datasetSubPath);
+		//  best to use incorporate this into the responsibilities of TDBStore
+		String datasetPath = MUDApplication.getRootDirectory() + datasetSubPath;
     	Dataset dataset = TDB2Factory.connectDataset(datasetPath);
     	
     	dataset.begin(ReadWrite.READ) ;

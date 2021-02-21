@@ -34,10 +34,10 @@ public abstract class AbstractDescriber implements IContentDescriber {
 		this.targetRDFTypes = new HashSet<String>();
 	}
 
-	protected Model sensesFromVisualDescription(String visualDescription) {
+	protected Model contentFromVisualDescription(String visualDescription) {
 		Model m = ModelFactory.createDefaultModel();
-		Resource senses = ResourceFactory.createResource("http://localhost:8080/mud/content/#content"); // not sure what this ought to be
-		m.add(senses, MUD.sight, visualDescription);
+		Resource content = ResourceFactory.createResource("http://localhost:8080/mud/content/#content"); // not sure what this ought to be
+		m.add(content, MUD.sight, visualDescription);
 		return m;
 	}
 }

@@ -39,9 +39,9 @@ public class StadiumDescriber extends AbstractDescriber {
 							end.getProperty(Time.inXSDDateTimeStamp).getString());
 					
 					if(LocalDateTime.now().isAfter(beginTime) && LocalDateTime.now().isBefore(endTime)) {
-						return Optional.of(sensesFromVisualDescription("Thousands of people are in and outside the stadium. There is a lot of noise"));
+						return Optional.of(contentFromVisualDescription("Thousands of people are in and outside the stadium. There is a lot of noise"));
 					}
-					return Optional.of(sensesFromVisualDescription("There is no game on right now"));
+					return Optional.of(contentFromVisualDescription("There is no game on right now"));
 				}
 			}
 			catch(LiteralRequiredException e) {

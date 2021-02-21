@@ -36,8 +36,8 @@ public abstract class AbstractDescriber implements IContentDescriber {
 
 	protected Model sensesFromVisualDescription(String visualDescription) {
 		Model m = ModelFactory.createDefaultModel();
-    Resource senses = ResourceFactory.createResource("http://localhost:8080/mud/content/#senses"); // not sure what this ought to be
-    m.add(senses, MUD.sight, visualDescription);
-    return m;
+		Resource senses = ResourceFactory.createResource("http://localhost:8080/mud/content/#content"); // not sure what this ought to be
+		m.add(senses, MUD.sight, visualDescription);
+		return m;
 	}
 }

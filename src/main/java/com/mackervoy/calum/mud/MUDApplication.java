@@ -24,6 +24,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.VCARD4;
 
 import com.mackervoy.calum.mud.vocabularies.*;
+import com.mackervoy.calum.mud.behaviour.task.TransitActor;
 import com.mackervoy.calum.mud.content.*;
 
 public class MUDApplication extends javax.ws.rs.core.Application {
@@ -114,8 +115,13 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 		new StadiumDescriber();
 	}
 	
+	public static void registerActors() {
+		new TransitActor();
+	}
+	
 	public MUDApplication() {
 		MUDApplication.initWorld();
 		MUDApplication.registerDescribers();
+		MUDApplication.registerActors();
 	}
 }

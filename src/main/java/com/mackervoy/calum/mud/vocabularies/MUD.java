@@ -28,7 +28,6 @@ public class MUD {
     public final static Resource Building = resource( "Building" );
     public final static Resource Party = resource( "Party" );
     public final static Resource Character = resource( "Character" );
-    public final static Resource Content = resource( "Content" );
     public final static Property locatedAt = property( "locatedAt" );
     public final static Property hasBuilding = property( "hasBuilding" );
     public final static Property population = property( "population" );
@@ -37,5 +36,4 @@ public class MUD {
     public final static Property CharacterList = property( "CharacterList" );
     public final static Property primaryTextContent = property("primaryTextContent");
     public final static Property primaryImageContent = property("primaryImageContent");
-    public final static Property sight = property("sight");
 }

@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.apache.jena.rdf.model.*;
 
-import com.mackervoy.calum.mud.vocabularies.MUD;
+import com.mackervoy.calum.mud.vocabularies.MUDContent;
 
 /**
  * @author Calum Mackervoy
@@ -37,7 +37,7 @@ public abstract class AbstractDescriber implements IContentDescriber {
 	protected Model contentFromVisualDescription(String visualDescription) {
 		Model m = ModelFactory.createDefaultModel();
 		Resource content = ResourceFactory.createResource("http://localhost:8080/mud/content/#content"); // not sure what this ought to be
-		m.add(content, MUD.sight, visualDescription);
+		m.add(content, MUDContent.sight, visualDescription);
 		return m;
 	}
 }

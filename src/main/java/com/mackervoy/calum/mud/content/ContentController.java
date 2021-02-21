@@ -33,7 +33,7 @@ public class ContentController {
     m.read(safeUri);
 
 		return getDescriber(safeUri, m)
-			.map(describer -> describer.describe(m, safeUri))
+			.flatMap(describer -> describer.describe(m, safeUri))
       .map(senseModel -> modelToTurtle(senseModel))
 			.orElse(null);
   }

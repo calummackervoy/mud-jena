@@ -4,6 +4,7 @@
 package com.mackervoy.calum.mud.content;
 
 import org.apache.jena.rdf.model.*;
+import java.util.Optional;
 
 /**
  * @author Calum Mackervoy
@@ -11,5 +12,5 @@ import org.apache.jena.rdf.model.*;
  * It allows the implementing class to define rich content for a parameterised object
  */
 public interface IContentDescriber {
-	public Model describe(Model dataModel, String uri);
+	public Optional<Model> describe(Model dataModel, String uri);
 }

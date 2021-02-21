@@ -1,6 +1,7 @@
 package com.mackervoy.calum.mud.content;
 
 import java.util.List;
+import java.util.Optional;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class StadiumDescriber extends AbstractDescriber {
 	}
 
 	@Override
-	public Model describe(Model dataModel, String uri) {
+	public Optional<Model> describe(Model dataModel, String uri) {
 		//is there a match on?
 		Resource stadium = dataModel.getResource(uri);
 		StmtIterator iter = stadium.listProperties(MUDEvents.hasEvent);
@@ -38,18 +39,18 @@ public class StadiumDescriber extends AbstractDescriber {
 							end.getProperty(Time.inXSDDateTimeStamp).getString());
 					
 					if(LocalDateTime.now().isAfter(beginTime) && LocalDateTime.now().isBefore(endTime)) {
-						return sensesFromVisualDescription("Thousands of people are in and outside the stadium. There is a lot of noise");
+						return Optional.of(sensesFromVisualDescription("Thousands of people are in and outside the stadium. There is a lot of noise"));
 					}
-					return sensesFromVisualDescription("There is no game on right now");
+					return Optional.of(sensesFromVisualDescription("There is no game on right now"));
 				}
 			}
 			catch(LiteralRequiredException e) {
-				return null;
+				return Optional.empty();
 			}
 		}
 		
 		//no match on - I have nothing to describe
-		return null;
+		return Optional.empty();
 	}
 
 }

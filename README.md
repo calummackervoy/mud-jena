@@ -71,7 +71,7 @@ docker build . -t mud-jena:<branch>
 
 To run the image, simply bind port 8080 to a local port:
 ```
-docker run -p 8080:8080  mud-jena:master
+docker run -p 8080:8080  mud-jena:<branch>
 ```
 
 # Deploying to a production Tomcat server
@@ -86,6 +86,3 @@ docker run -p 8080:8080  mud-jena:master
 # Contributing
 
 It's early days for now, please get in touch with us directly and we'll help you set up and get involved in the project :-)
-
-We aim to follow the Inrupt Guidelines for writing ontologies. At the time of writing these are still contained in a [pull request branch](https://github.com/pmcb55/public-documentation/blob/feat/add-rdf-vocab-guidelines/coding-conventions/rdf-vocabulary-guidelines.md)
-

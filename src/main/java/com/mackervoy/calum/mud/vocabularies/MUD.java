@@ -7,7 +7,7 @@ import org.apache.jena.rdf.model.* ;
  */
 
 public class MUD {
-	public static final String uri ="https://raw.githubusercontent.com/MattTennison/vocab/content-types/mud.ttl#";
+	public static final String uri ="https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl#";
 	
 	/** returns the URI for this schema
      * @return the URI for this schema

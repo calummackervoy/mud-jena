@@ -34,7 +34,6 @@ public class ContentController {
 
 		return getDescriber(safeUri, m)
 			.map(describer -> describer.describe(m, safeUri))
-      .map(description -> descriptionToSensesModel(description))
       .map(senseModel -> modelToTurtle(senseModel))
 			.orElse(null);
   }
@@ -52,13 +51,6 @@ public class ContentController {
     }
 
 		return Optional.ofNullable(describer);
-  }
-
-  private Model descriptionToSensesModel(String visualDescription) {
-    Model m = ModelFactory.createDefaultModel();
-    Resource senses = ResourceFactory.createResource("http://localhost:8080/mud/content/#senses"); // not sure what this ought to be
-    m.add(senses, MUD.sight, visualDescription);
-    return m;
   }
 
   private String modelToTurtle(Model m) {

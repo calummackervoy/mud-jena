@@ -18,7 +18,7 @@ public class StadiumDescriber extends AbstractDescriber {
 	}
 
 	@Override
-	public String describe(Model dataModel, String uri) {
+	public Model describe(Model dataModel, String uri) {
 		//is there a match on?
 		Resource stadium = dataModel.getResource(uri);
 		StmtIterator iter = stadium.listProperties(MUDEvents.hasEvent);
@@ -38,9 +38,9 @@ public class StadiumDescriber extends AbstractDescriber {
 							end.getProperty(Time.inXSDDateTimeStamp).getString());
 					
 					if(LocalDateTime.now().isAfter(beginTime) && LocalDateTime.now().isBefore(endTime)) {
-						return "Thousands of people are in and outside the stadium. There is a lot of noise";
+						return sensesFromVisualDescription("Thousands of people are in and outside the stadium. There is a lot of noise");
 					}
-					return "There is no game on right now";
+					return sensesFromVisualDescription("There is no game on right now");
 				}
 			}
 			catch(LiteralRequiredException e) {

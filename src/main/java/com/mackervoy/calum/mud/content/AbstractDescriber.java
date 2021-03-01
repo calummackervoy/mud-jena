@@ -6,6 +6,10 @@ package com.mackervoy.calum.mud.content;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.jena.rdf.model.*;
+
+import com.mackervoy.calum.mud.vocabularies.MUDContent;
+
 /**
  * @author Calum Mackervoy
  * The AbstractDescriber is the superclass which all Describers should inherit from
@@ -28,5 +32,12 @@ public abstract class AbstractDescriber implements IContentDescriber {
 	
 	public AbstractDescriber() {
 		this.targetRDFTypes = new HashSet<String>();
+	}
+
+	protected Model contentFromVisualDescription(String visualDescription) {
+		Model m = ModelFactory.createDefaultModel();
+		Resource content = ResourceFactory.createResource("http://localhost:8080/mud/content/#content"); // not sure what this ought to be
+		m.add(content, MUDContent.sight, visualDescription);
+		return m;
 	}
 }

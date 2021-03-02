@@ -74,6 +74,15 @@ To run the image, simply bind port 8080 to a local port:
 docker run -p 8080:8080  mud-jena:<branch>
 ```
 
+## CI
+
+We run Docker build on PRs in this repo (restricted to contributors only for security reasons), so if you want to checkout a PR or master, you can use our prebuilt images like so:
+```
+docker run -p 8080:8080 multiuserdomain/mud-jena:master
+
+docker run -p 8080:8080 multiuserdomain/mud-jena:<branch-name>
+```
+
 # Deploying to a production Tomcat server
 
 * In Eclipse, in the Project Explorer, right-click on the MUD project name and select Export / WAR file

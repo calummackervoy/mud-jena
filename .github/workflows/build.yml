@@ -6,6 +6,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
     - name: Login to DockerHub
       uses: docker/login-action@v1
       with:
@@ -17,7 +22,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: multiuserdomain/mud-jena:${GITHUB_REF##*/}
+        tags: multiuserdomain/mud-jena:${{ steps.extract_branch.outputs.branch }}
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}

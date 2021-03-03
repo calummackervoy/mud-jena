@@ -32,5 +32,5 @@ public class MUDLogic {
     public final static Resource Transit = resource( "Transit" );
     public final static Property endState = property( "endState" );    
     public final static Property inserts = property( "inserts" );
-    public final static Property deletes = property( "inserts" );  
+    public final static Property deletes = property( "deletes" );  
 }

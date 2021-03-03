@@ -11,7 +11,7 @@ public class DatasetItem extends AbstractFileStorageWrapper {
 	private String name;
 	
 	public DatasetItem(String collectionPath) {
-		this.path = collectionPath;
+		super(collectionPath);
 		this.name = Random.getRandomUUIDString();
 	}
 	
@@ -23,18 +23,5 @@ public class DatasetItem extends AbstractFileStorageWrapper {
 	@Override
 	public String getFileLocation() {
 		return super.getFileLocation() + this.name + "/";
-	}
-	
-	/**
-	 * @param shortHand a short string to help human readers understand the type of the resource
-	 * @param name identifier for the resource
-	 * @return a full URI with the dataset path + the shorthand type + a random ID
-	 */
-	public String getNewResourceUri(String shortHand, String name) {
-		return this.getUri() + "#" + shortHand + "-" + name;
-	}
-	
-	public String getNewResourceUri(String shortHand) {
-		return this.getNewResourceUri(shortHand, Random.getRandomUUIDString());
 	}
 }

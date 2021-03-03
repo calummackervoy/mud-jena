@@ -16,7 +16,7 @@ public class DatasetCollection extends AbstractFileStorageWrapper {
 	 * e.g. /world/mydatacollection/
 	 */
 	public DatasetCollection(String subPath) {
-		this.path = subPath;
+		super(subPath);
 		
 		// initialise directories storing the collection
 		File dir = new File(this.getFileLocation());

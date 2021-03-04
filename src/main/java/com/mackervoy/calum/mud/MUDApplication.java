@@ -42,11 +42,10 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	    //TODO: extend the DatasetItem class to wrap the Jena dataset, so that the write can be completed by this class
 		//TODO: use a new datasetItem for the world content or continue with the global one ? Open issue
 	    //DatasetItem demoData = TDBStore.WORLD.getNewDataset();
-	    Dataset dataset = TDB2Factory.connectDataset(TDBStore.WORLD.getFileLocation()) ;
-	    
-		dataset.begin(ReadWrite.WRITE) ;
-		
+		Dataset dataset = TDB2Factory.connectDataset(TDBStore.WORLD.getFileLocation()) ;
 		try {
+			dataset.begin(ReadWrite.WRITE) ;
+			
 			if(!dataset.isEmpty()) {
 		    	dataset.abort();
 		    	return;

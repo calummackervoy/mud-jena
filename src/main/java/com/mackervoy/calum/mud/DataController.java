@@ -4,13 +4,16 @@
 package com.mackervoy.calum.mud;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.Response;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
@@ -25,11 +28,8 @@ import org.apache.jena.tdb2.TDB2Factory;
 public class DataController {
 	@GET
     @Produces("text/turtle")
-    public String get(@PathParam("any") List<PathSegment> segments) {
-		//TODO: check if the dataset exists and return 404 if not (rather than creating an empty one on each 'not found' request
-		//	in TDB1 you would use inUseLocation(..) but this is not provided by the TDB2Factory (needs research)
-		//  best to use incorporate this into the responsibilities of TDBStore
-		
+    public Response get(@PathParam("any") List<PathSegment> segments) {
+		//parse inpu
 		String datasetSubPath = "";
 		
 		for(int i = 0; i < segments.size(); i++) {
@@ -37,6 +37,13 @@ public class DataController {
 		}
 		
 		String datasetPath = MUDApplication.getRootDirectory() + datasetSubPath;
+		
+		//if the dataset is not in use, return 404
+		System.out.println(datasetPath);
+		if(!TDBStore.inUseLocation(new File(datasetPath))) {
+			throw new NotFoundException();
+		}
+		
     	Dataset dataset = TDB2Factory.connectDataset(datasetPath);
     	
     	dataset.begin(ReadWrite.READ) ;
@@ -47,6 +54,6 @@ public class DataController {
         m.write(baos, "Turtle");
         dataset.end();
     	
-        return baos.toString();
+        return Response.ok(baos.toString()).build();
     }
 }

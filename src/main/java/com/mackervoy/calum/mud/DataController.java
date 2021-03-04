@@ -33,13 +33,13 @@ public class DataController {
 		String datasetSubPath = "";
 		
 		for(int i = 0; i < segments.size(); i++) {
-			datasetSubPath += "/" + segments.get(i).toString();
+			if(datasetSubPath.length() > 0) datasetSubPath += "/";
+			datasetSubPath += segments.get(i).toString();
 		}
 		
 		String datasetPath = MUDApplication.getRootDirectory() + datasetSubPath;
 		
 		//if the dataset is not in use, return 404
-		System.out.println(datasetPath);
 		if(!TDBStore.inUseLocation(new File(datasetPath))) {
 			throw new NotFoundException();
 		}

@@ -3,6 +3,7 @@ package com.mackervoy.calum.mud.behaviour.task;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Optional;
 
 /**
  * @author Calum Mackervoy
@@ -23,16 +24,16 @@ public class TaskActorFactory {
 		return false;
 	}
 	
-	public ITaskActor getActor(String rdfType) {
+	public Optional<ITaskActor> getActor(String rdfType) {
 		Class<? extends ITaskActor> actor = taskActors.get(rdfType);
-		if(actor == null) return null;
+		if(actor == null) return Optional.empty();
 		try {
-			return actor.getDeclaredConstructor().newInstance();
+			return Optional.of(actor.getDeclaredConstructor().newInstance());
 		} catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException | IllegalAccessException | InstantiationException e) {
 			System.out.println("Error in TaskActorFactory.getActor!");
 			e.printStackTrace();
-			return null;
+			return Optional.empty();
 		}
 	}
 }

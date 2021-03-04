@@ -1,6 +1,7 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
 import java.io.StringReader;
+import java.util.Optional;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -28,10 +29,11 @@ public class TaskController {
 		
 		// check if I have a provider for the URI
 		TaskActorFactory factory = new TaskActorFactory();
-		ITaskActor actor = factory.getActor(taskUri);
+		Optional<ITaskActor> result = factory.getActor(taskUri);
 		
 		// found a provider, return 200 with content
-		if(actor != null) {
+		if(result.isPresent()) {
+			ITaskActor actor = result.get();
 			Model request = ModelFactory.createDefaultModel();
 			request.read(new StringReader(requestBody), "", "TURTLE");
 			return actor.act(request);

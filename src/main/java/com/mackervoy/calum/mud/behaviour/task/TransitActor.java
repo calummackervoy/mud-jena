@@ -11,6 +11,7 @@ import org.apache.jena.vocabulary.RDF;
 
 import com.mackervoy.calum.mud.behaviour.Patch;
 import com.mackervoy.calum.mud.vocabularies.MUD;
+import com.mackervoy.calum.mud.vocabularies.MUDCharacter;
 import com.mackervoy.calum.mud.vocabularies.MUDLogic;
 
 /**
@@ -24,7 +25,7 @@ public class TransitActor extends AbstractTaskActor {
 	}
 	
 	private void getCharacterPatches(Model request, Resource destination) {
-		ResIterator characters = request.listResourcesWithProperty(RDF.type, MUD.Character);
+		ResIterator characters = request.listResourcesWithProperty(RDF.type, MUDCharacter.Character);
 		
 		// append a Task for each Character in the list
 		while(characters.hasNext()) {

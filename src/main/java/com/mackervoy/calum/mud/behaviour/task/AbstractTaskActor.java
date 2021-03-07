@@ -1,7 +1,5 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,18 +9,13 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.vocabulary.RDF;
 
 import com.mackervoy.calum.mud.DatasetItem;
-import com.mackervoy.calum.mud.MUDApplication;
-import com.mackervoy.calum.mud.Random;
+import com.mackervoy.calum.mud.exception.MissingRequiredArgumentException;
 import com.mackervoy.calum.mud.TDBStore;
 import com.mackervoy.calum.mud.behaviour.Task;
-import com.mackervoy.calum.mud.vocabularies.MUD;
-import com.mackervoy.calum.mud.vocabularies.MUDLogic;
-import com.mackervoy.calum.mud.vocabularies.Time;
 
 /**
  * @author Calum Mackervoy
@@ -70,7 +63,7 @@ public abstract class AbstractTaskActor implements ITaskActor {
 			return match;
 		}
 		catch(java.util.NoSuchElementException e) {
-			throw new NullPointerException("An object with type " + type + " must be passed with the request");
+			throw new MissingRequiredArgumentException("An object with type " + type + " must be passed with the request");
 		}
 	}
 	

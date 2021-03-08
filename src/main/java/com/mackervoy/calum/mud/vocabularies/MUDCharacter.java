@@ -3,7 +3,7 @@ package com.mackervoy.calum.mud.vocabularies;
 import org.apache.jena.rdf.model.* ;
 
 public class MUDCharacter {
-	public static final String uri ="https://raw.githubusercontent.com/Multi-User-Domain/vocab/character/mudchar.ttl#";
+	public static final String uri ="https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mudchar.ttl#";
 	
 	/** returns the URI for this schema
      * @return the URI for this schema

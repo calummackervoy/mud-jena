@@ -22,6 +22,8 @@ import org.apache.jena.vocabulary.RDF;
 
 import com.mackervoy.calum.mud.DatasetItem;
 import com.mackervoy.calum.mud.exception.MissingRequiredArgumentException;
+import com.mackervoy.calum.mud.vocabularies.MUD;
+import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
 import com.mackervoy.calum.mud.TDBStore;
 import com.mackervoy.calum.mud.behaviour.Task;
 
@@ -66,26 +68,19 @@ public abstract class AbstractTaskActor implements ITaskActor {
 	 */
 	protected Resource getFirstResourceMatchingType(Model request, Resource type) {
 		//taken from https://jena.apache.org/documentation/inference/#RDFSPlusRules
-		//TODO: read from file: https://github.com/Multi-User-Domain/mud-jena/issues/9
-		String basicRDFRules = "[rdfs2:  (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)]\n" + 
-				"[rdfs3:  (?x ?p ?y), (?p rdfs:range ?c) -> (?y rdf:type ?c)]\n" + 
-				"[rdfs6:  (?a ?p ?b), (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)]\n" + 
-				"[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]";
-		//List<Rule> rules = Rule.parseRules(basicRDFRules);
+		//TODO: read from local file: https://github.com/Multi-User-Domain/mud-jena/issues/9
 		List<Rule> rules = Rule.rulesFromURL("https://calum.inrupt.net/public/rules/rdfsbasicrules.txt");
 		
-		/*OntModel buildings = ModelFactory.createOntologyModel(OntModelSpec.);
-		buildings.read("https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mudbuildings.ttl");
-		buildings.read("https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl");*/
-		//OntModel mud = ModelFactory.createOntologyModel("https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl");
-		//buildings.add(mud);
-		//schema.read("https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mudbuildings.ttl");
+		//TODO: https://github.com/Multi-User-Domain/mud-jena/issues/14
+		Model buildings = ModelFactory.createDefaultModel();
+		buildings.read(MUDBuildings.getURI(), null, "TTL");
+		buildings.read(MUD.getURI(), null, "TTL");
 		
+		//we are performing transitive reasoning: if A is type B and B is subclass of C, then A is C as well
 		GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
 		reasoner.setOWLTranslation(true);               // not needed in RDFS case
 		reasoner.setTransitiveClosureCaching(true);
-		//InfModel inf = ModelFactory.createInfModel(reasoner, buildings, request);
-		InfModel inf = ModelFactory.createInfModel(reasoner, request);
+		InfModel inf = ModelFactory.createInfModel(reasoner, buildings, request);
 		
 		ResIterator matches = inf.listResourcesWithProperty(RDF.type, type);
 		try {

@@ -26,12 +26,9 @@ public class MUD {
     public final static Resource Locatable = resource( "Locatable" );
     public final static Resource Settlement = resource( "Settlement" );
     public final static Resource Building = resource( "Building" );
-    public final static Resource Party = resource( "Party" );
-    public final static Resource Character = resource( "Character" );
     public final static Property locatedAt = property( "locatedAt" );
     public final static Property hasBuilding = property( "hasBuilding" );
     public final static Property population = property( "population" );
-    public final static Property mainParty = property( "mainParty" );
     public final static Property ownedBy = property( "ownedBy" );
     public final static Property CharacterList = property( "CharacterList" );
     public final static Property primaryTextContent = property("primaryTextContent");

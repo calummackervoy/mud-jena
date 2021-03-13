@@ -11,6 +11,7 @@ import org.apache.jena.vocabulary.RDF;
 
 import com.mackervoy.calum.mud.behaviour.Patch;
 import com.mackervoy.calum.mud.vocabularies.MUD;
+import com.mackervoy.calum.mud.vocabularies.MUDCharacter;
 import com.mackervoy.calum.mud.vocabularies.MUDLogic;
 
 /**
@@ -24,7 +25,7 @@ public class TransitActor extends AbstractTaskActor {
 	}
 	
 	private void getCharacterPatches(Model request, Resource destination) {
-		ResIterator characters = request.listResourcesWithProperty(RDF.type, MUD.Character);
+		ResIterator characters = request.listResourcesWithProperty(RDF.type, MUDCharacter.Character);
 		
 		// append a Task for each Character in the list
 		while(characters.hasNext()) {
@@ -43,8 +44,6 @@ public class TransitActor extends AbstractTaskActor {
 	@Override
 	public Response act(Model request) {
 		//get the location from the request
-		//TODO: when this raises 500 (NullPointerException), I should map the exception to a 400 Response
-		//  https://stackoverflow.com/questions/9844654/jersey-returning-400-error-instead-of-500-when-given-invalid-request-body
 		Resource destination = this.getFirstResourceMatchingType(request, MUD.Locatable);
 		
 		//append endState changes for the Task, for each character

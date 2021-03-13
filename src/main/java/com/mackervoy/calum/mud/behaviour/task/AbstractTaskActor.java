@@ -4,6 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import javax.ws.rs.BadRequestException;
+
 import java.util.List;
 
 import org.apache.jena.ontology.OntModel;
@@ -21,7 +24,6 @@ import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.vocabulary.RDF;
 
 import com.mackervoy.calum.mud.DatasetItem;
-import com.mackervoy.calum.mud.exception.MissingRequiredArgumentException;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
 import com.mackervoy.calum.mud.TDBStore;
@@ -87,8 +89,9 @@ public abstract class AbstractTaskActor implements ITaskActor {
 			Resource match = matches.next();
 			return match;
 		}
+		//TODO: the error is never thrown because of the workaround to https://github.com/Multi-User-Domain/mud-jena/issues/14
 		catch(java.util.NoSuchElementException e) {
-			throw new MissingRequiredArgumentException("An object with type " + type + " must be passed with the request");
+			throw new BadRequestException("An object with type " + type + " must be passed with the request");
 		}
 	}
 	

@@ -44,8 +44,6 @@ public class TransitActor extends AbstractTaskActor {
 	@Override
 	public Response act(Model request) {
 		//get the location from the request
-		//TODO: when this raises 500 (NullPointerException), I should map the exception to a 400 Response
-		//  https://stackoverflow.com/questions/9844654/jersey-returning-400-error-instead-of-500-when-given-invalid-request-body
 		Resource destination = this.getFirstResourceMatchingType(request, MUD.Locatable);
 		
 		//append endState changes for the Task, for each character

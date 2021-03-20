@@ -25,7 +25,7 @@ import org.apache.jena.tdb2.TDB2Factory;
  * A generic endpoint for GETting datasets and resources
  */
 @Path("/{any: .*}")
-public class DataController {
+public class DataController extends AbstractMUDController {
 	@GET
     @Produces("text/turtle")
     public Response get(@PathParam("any") List<PathSegment> segments) {
@@ -46,14 +46,12 @@ public class DataController {
 		
     	Dataset dataset = TDB2Factory.connectDataset(datasetPath);
     	
+    	// serialize response
     	dataset.begin(ReadWrite.READ) ;
 	    Model m = dataset.getDefaultModel() ;
-	        		
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        
-        m.write(baos, "Turtle");
+	    String response = this.serializeModelToTurtle(m);
         dataset.end();
     	
-        return Response.ok(baos.toString()).build();
+        return Response.ok(response).build();
     }
 }

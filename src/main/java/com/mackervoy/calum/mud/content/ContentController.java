@@ -3,6 +3,7 @@
  */
 package com.mackervoy.calum.mud.content;
 
+import com.mackervoy.calum.mud.AbstractMUDController;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 
 import java.io.ByteArrayOutputStream;
@@ -24,7 +25,7 @@ import org.apache.jena.vocabulary.RDF;
  * (e.g. "please describe this object")
  */
 @Path("/content/")
-public class ContentController {
+public class ContentController extends AbstractMUDController {
   @GET
   @Produces("text/turtle")
   public String getContent(@QueryParam("uri") String uri) {
@@ -34,7 +35,7 @@ public class ContentController {
 
 		return getDescriber(safeUri, m)
 			.flatMap(describer -> describer.describe(m, safeUri))
-      .map(contentModel -> modelToTurtle(contentModel))
+      .map(contentModel -> this.serializeModelToTurtle(contentModel))
 			.orElse(null);
   }
 	
@@ -51,11 +52,5 @@ public class ContentController {
     }
 
 		return Optional.ofNullable(describer);
-  }
-
-  private String modelToTurtle(Model m) {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    m.write(baos, "Turtle");
-    return baos.toString();
   }
 }

@@ -4,7 +4,10 @@
 package com.mackervoy.calum.mud;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.ws.rs.NotFoundException;
 
@@ -28,23 +31,41 @@ public class TDBStore {
 	}
 	
 	/**
+	 * takes an unsafe URI String and returns the path part of the URI if valid, or null if not
+	 */
+	private final static Optional<String> getFilePathFromUri(String uriInput) {
+		try {
+			URL uri = new URL(uriInput);
+			
+			if(!uri.getHost().equals(new URL(MUDApplication.getSiteUrl()).getHost())) {
+				throw new NotFoundException("The given dataset is not hosted on this site!");
+			}
+			
+			return Optional.of(uri.getPath().substring(1));
+		}
+		catch(MalformedURLException e) {
+			return Optional.empty();
+		}
+	}
+	
+	/**
 	 * @param uriOrFilePath a URI or filesystem path for the dataset item
 	 * @return the DatasetItem found at this resource
 	 * @throws NotFoundException if it can't be found
 	 */
 	public final static DatasetItem getDatasetItem(String uriOrFilePath) {
-		//TODO: convert a URI to a file system path
+		//convert a URI to a file system path
+		String filePath = getFilePathFromUri(uriOrFilePath).orElse(uriOrFilePath);
 		
-		if(!TDBStore.inUseLocation(new File(uriOrFilePath))) {
-			throw new NotFoundException();
+		if(!TDBStore.inUseLocation(new File(filePath))) {
+			throw new NotFoundException("The given dataset is not in use!");
 		}
 		
-		String[] splitString = uriOrFilePath.split("/");
-		String name = splitString[splitString.length];
-		String collection = String.join("/", Arrays.copyOfRange(splitString, 0, splitString.length));
+		String[] splitString = filePath.split("/");
+		String name = splitString[splitString.length - 1];
 		
-		System.out.println("built collection String " + collection);
-		System.out.println("built dataset name " + name);
+		splitString = Arrays.copyOfRange(splitString, 0, splitString.length - 1);
+		String collection = String.join("/", splitString);
 		
 		return new DatasetItem(collection, name);
 	}

@@ -1,9 +1,15 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Optional;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.RDF;
 
 /**
  * @author Calum Mackervoy
@@ -24,14 +30,32 @@ public class TaskActorFactory {
 		return false;
 	}
 	
-	public Optional<ITaskActor> getActor(String rdfType) {
+	private Constructor<? extends ITaskActor> resolveActorClassConstructor(String rdfType, Class<?>... parameterTypes) throws NoSuchMethodException, SecurityException {
 		Class<? extends ITaskActor> actor = taskActors.get(rdfType);
-		if(actor == null) return Optional.empty();
+		if(actor == null) return null;
+		return actor.getConstructor(parameterTypes);
+	}
+	
+	public Optional<ITaskActor> getActorWithNewTask(String rdfType) {
 		try {
-			return Optional.of(actor.getDeclaredConstructor().newInstance());
-		} catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException | IllegalAccessException | InstantiationException e) {
-			System.out.println("Error in TaskActorFactory.getActor!");
+			return Optional.of(this.resolveActorClassConstructor(rdfType).newInstance());
+		}
+		catch (Exception e) {
+			System.out.println("Error in TaskActorFactory.getActorWithNewTask!");
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
+	
+	public Optional<ITaskActor> getActorWithExistingTask(Resource task) {
+		String taskUri = task.getURI();
+	    String rdfType = task.getPropertyResourceValue(RDF.type).toString();
+	    
+	    try {
+			return Optional.of(this.resolveActorClassConstructor(rdfType, String.class).newInstance(taskUri));
+		}
+		catch (Exception e) {
+			System.out.println("Error in TaskActorFactory.getActorWithExistingTask!");
 			e.printStackTrace();
 			return Optional.empty();
 		}

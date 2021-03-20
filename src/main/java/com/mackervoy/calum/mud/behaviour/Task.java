@@ -37,6 +37,14 @@ public class Task extends ResourceItem {
 		this.addTaskProperties();
 	}
 	
+	public Task(DatasetItem parentDatasetItem, String existingTaskUri) {
+		super(parentDatasetItem);
+		
+		this.taskUri = existingTaskUri;
+		this.model.read(existingTaskUri);
+		this.task = this.model.getResource(existingTaskUri);
+	}
+	
 	public Resource getResource() {
 		return this.task;
 	}

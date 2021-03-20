@@ -24,6 +24,11 @@ public class TransitActor extends AbstractTaskActor {
 		this.addTargetRDFType(MUDLogic.Transit.toString());
 	}
 	
+	public TransitActor(String taskUri) {
+		super(taskUri);
+		this.addTargetRDFType(MUDLogic.Transit.toString());
+	}
+	
 	private void getCharacterPatches(Model request, Resource destination) {
 		ResIterator characters = request.listResourcesWithProperty(RDF.type, MUDCharacter.Character);
 		
@@ -42,7 +47,7 @@ public class TransitActor extends AbstractTaskActor {
 	}
 
 	@Override
-	public Response act(Model request) {
+	public String act(Model request) {
 		//get the location from the request
 		Resource destination = this.getFirstResourceMatchingType(request, MUD.Locatable);
 		
@@ -52,12 +57,7 @@ public class TransitActor extends AbstractTaskActor {
 		this.model.add(this.task.getResource(), RDF.type, MUDLogic.Transit);
 		
 		this.commitToDB();
-		return Response.created(URI.create(this.taskDatasetItem.getUri())).build();
-	}
-
-	@Override
-	public boolean complete(String uri) {
-		return false;
+		return this.taskDatasetItem.getUri();
 	}
 	
 }

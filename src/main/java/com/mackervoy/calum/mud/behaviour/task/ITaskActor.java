@@ -14,6 +14,6 @@ import org.apache.jena.rdf.model.Model;
  * of consequences are carried out to datasets
  */
 public interface ITaskActor {
-	public Response act(Model request);
-	public boolean complete(String uri);
+	public String act(Model request);
+	public boolean complete();
 }

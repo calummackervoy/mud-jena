@@ -56,11 +56,26 @@ public abstract class AbstractTaskActor implements ITaskActor {
 		return true;
 	}
 	
+	/**
+	 * version of the constructor which creates a new dataset
+	 */
 	public AbstractTaskActor() {
 		this.targetRDFTypes = new HashSet<String>();
-		this.taskDatasetItem = TDBStore.TASK_ACTIONS.getNewDataset();
 		this.model = ModelFactory.createDefaultModel();
+		
+		this.taskDatasetItem = TDBStore.TASK_ACTIONS.getNewDataset();
 		this.task = new Task(this.taskDatasetItem);
+	}
+	
+	/**
+	 * version of the constructor which links to an existing (parameterised task)
+	 */
+	public AbstractTaskActor(String taskUri) {
+		this.targetRDFTypes = new HashSet<String>();
+		this.model = ModelFactory.createDefaultModel();
+		
+		this.taskDatasetItem = TDBStore.getDatasetItem(taskUri);
+		this.task = new Task(this.taskDatasetItem, taskUri);
 	}
 	
 	/**
@@ -108,5 +123,13 @@ public abstract class AbstractTaskActor implements ITaskActor {
 		finally {
 			dataset.end();
 		}
+	}
+	
+	public boolean complete() {
+		//if the task has a complete time and that's passed, it's complete
+		
+		//it's also complete if it doesn't have a complete time
+		
+		return false;
 	}
 }

@@ -63,7 +63,8 @@ public class Task extends ResourceItem {
 		
 		Resource taskEnds = ResourceFactory.createResource(this.parent.getNewResourceUri("instant"));
 		this.model.add(taskEnds, RDF.type, Time.Instant);
-		this.model.add(taskEnds, Time.inXSDDateTimeStamp, LocalDateTime.now().plusHours(2).format(formatter));
+		//TODO: parameterise time to complete
+		this.model.add(taskEnds, Time.inXSDDateTimeStamp, LocalDateTime.now().plusMinutes(1).format(formatter));
 
 		//add them to the transit resource
 		this.model.add(this.task, Time.hasBeginning, taskBegins);

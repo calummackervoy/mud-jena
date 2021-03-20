@@ -4,6 +4,9 @@
 package com.mackervoy.calum.mud;
 
 import java.io.File;
+import java.util.Arrays;
+
+import javax.ws.rs.NotFoundException;
 
 /**
  * @author Calum Mackervoy
@@ -22,5 +25,27 @@ public class TDBStore {
 	public final static boolean inUseLocation(String fileLocation) {
 		File f = new File(fileLocation);
 		return TDBStore.inUseLocation(f);
+	}
+	
+	/**
+	 * @param uriOrFilePath a URI or filesystem path for the dataset item
+	 * @return the DatasetItem found at this resource
+	 * @throws NotFoundException if it can't be found
+	 */
+	public final static DatasetItem getDatasetItem(String uriOrFilePath) {
+		//TODO: convert a URI to a file system path
+		
+		if(!TDBStore.inUseLocation(new File(uriOrFilePath))) {
+			throw new NotFoundException();
+		}
+		
+		String[] splitString = uriOrFilePath.split("/");
+		String name = splitString[splitString.length];
+		String collection = String.join("/", Arrays.copyOfRange(splitString, 0, splitString.length));
+		
+		System.out.println("built collection String " + collection);
+		System.out.println("built dataset name " + name);
+		
+		return new DatasetItem(collection, name);
 	}
 }

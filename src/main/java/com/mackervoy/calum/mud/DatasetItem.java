@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.mackervoy.calum.mud;
 
 /**
@@ -13,6 +10,11 @@ public class DatasetItem extends AbstractFileStorageWrapper {
 	public DatasetItem(String collectionPath) {
 		super(collectionPath);
 		this.name = Random.getRandomUUIDString();
+	}
+	
+	public DatasetItem(String collectionPath, String name) {
+		super(collectionPath);
+		this.name = name;
 	}
 	
 	@Override

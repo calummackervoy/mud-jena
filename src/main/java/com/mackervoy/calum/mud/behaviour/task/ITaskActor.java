@@ -16,4 +16,5 @@ import org.apache.jena.rdf.model.Model;
 public interface ITaskActor {
 	public String act(Model request);
 	public boolean isComplete();
+	public Model complete(); //for finishing a complete task
 }

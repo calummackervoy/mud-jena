@@ -29,6 +29,7 @@ import org.apache.jena.vocabulary.RDF;
 import com.mackervoy.calum.mud.DatasetItem;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
+import com.mackervoy.calum.mud.vocabularies.MUDLogic;
 import com.mackervoy.calum.mud.vocabularies.Time;
 import com.mackervoy.calum.mud.TDBStore;
 import com.mackervoy.calum.mud.behaviour.Task;
@@ -140,9 +141,24 @@ public abstract class AbstractTaskActor implements ITaskActor {
 		return Optional.of(Time.instantToLocalDateTime(end));
 	}
 	
+	/**
+	 * @return true if the task is complete, false if not
+	 */
 	public boolean isComplete() {
 		//if the task has a complete time and that's passed, it's complete
 		//it's also complete if it doesn't have a complete time
 		return this.getTaskEndTime().map(end -> LocalDateTime.now().isAfter(end)).orElse(true);
+	}
+	
+	/**
+	 * marks the task as completed in the database and effectuates the task endState
+	 * @return the completed Task graph
+	 */
+	public Model complete() {
+		if(this.isComplete()) {
+			this.model.add(this.task.getResource(), MUDLogic.isComplete, "true");
+			this.commitToDB();
+		}
+		return this.model;
 	}
 }

@@ -4,18 +4,24 @@
 package com.mackervoy.calum.mud.content;
 
 import com.mackervoy.calum.mud.vocabularies.MUD;
+import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
+import com.mackervoy.calum.mud.vocabularies.MUDEvents;
 
 import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 import java.util.Optional;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.vocabulary.RDF;
 
 /**
@@ -25,30 +31,48 @@ import org.apache.jena.vocabulary.RDF;
  */
 @Path("/content/")
 public class ContentController {
-  @GET
-  @Produces("text/turtle")
-  public String getContent(@QueryParam("uri") String uri) {
-		final String safeUri = uri == null ? "" : uri;
-		final Model m = ModelFactory.createDefaultModel();
-    m.read(safeUri);
-
-		return getDescriber(safeUri, m)
-			.flatMap(describer -> describer.describe(m, safeUri))
-      .map(contentModel -> modelToTurtle(contentModel))
-			.orElse(null);
-  }
+	//NOTE: the ContentContoller POST must receives objects with RDF type set, or it will ignore them
+	@POST
+	public Response post(String requestBody) {
+		final Model request = ModelFactory.createDefaultModel();
+		request.read(new StringReader(requestBody), "", "TURTLE");
 	
-	private Optional<IContentDescriber> getDescriber(String uri, Model m) {
+		//build the result model by iterating over each object in the scene and annotating a description
+		//TODO: for now we are just describing everything, later we will want to be able to optimise what is described
+		Model result = ModelFactory.createDefaultModel();
+		ResIterator resources = request.listResourcesWithProperty(RDF.type);
+		while(resources.hasNext()) {
+			Resource res = resources.next();
+			Model m = ModelFactory.createDefaultModel();
+			m.read(res.getURI());
+			final Resource r = m.getResource(res.getURI());
+			
+			System.out.println(r);
+			this.getDescriber(r)
+				.flatMap(describer -> describer.describe(r))
+				.ifPresent(content -> result.add(content));
+		}
+		
+		String responseData = result.isEmpty() ? null : modelToTurtle(result);
+		return Response.ok(responseData).build();
+	}
+	
+  private Optional<IContentDescriber> getDescriber(Resource r) {
 		// check if I have a describer for the URI
-    DescriberFactory factory = new DescriberFactory();
-    IContentDescriber describer = factory.getDescriber(uri);
+		DescriberFactory factory = new DescriberFactory();
+		IContentDescriber describer = factory.getDescriber(r.getURI());
+		System.out.println("found " + describer + " from " + r.getURI());
 		
 		// if I don't, try the RDF type
 		if (describer == null) {
-      Resource r = m.getResource(uri);
-      String type = r.getPropertyResourceValue(RDF.type).toString();
-      describer = factory.getDescriber(type);
-    }
+			try {
+				String type = r.getPropertyResourceValue(RDF.type).toString();
+				describer = factory.getDescriber(type);
+			}
+			catch(NullPointerException e) {
+				describer = null;
+			}
+		}
 
 		return Optional.ofNullable(describer);
   }

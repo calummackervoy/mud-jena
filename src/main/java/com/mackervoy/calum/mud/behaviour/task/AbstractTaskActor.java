@@ -1,13 +1,16 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.ws.rs.BadRequestException;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.query.Dataset;
@@ -26,6 +29,7 @@ import org.apache.jena.vocabulary.RDF;
 import com.mackervoy.calum.mud.DatasetItem;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
+import com.mackervoy.calum.mud.vocabularies.Time;
 import com.mackervoy.calum.mud.TDBStore;
 import com.mackervoy.calum.mud.behaviour.Task;
 
@@ -125,11 +129,20 @@ public abstract class AbstractTaskActor implements ITaskActor {
 		}
 	}
 	
+	/**
+	 * @return the LocalDateTime when this task will end, or null if it doesn't have one set 
+	 * Default uses the Time ontology, so it's useful to override this if you want to use something else
+	 */
+	public Optional<LocalDateTime> getTaskEndTime() {
+		Resource end = this.task.getResource().getPropertyResourceValue(Time.hasEnd);
+		if(end == null) return Optional.empty();
+		
+		return Optional.of(Time.instantToLocalDateTime(end));
+	}
+	
 	public boolean complete() {
 		//if the task has a complete time and that's passed, it's complete
-		
 		//it's also complete if it doesn't have a complete time
-		
-		return false;
+		return this.getTaskEndTime().map(end -> LocalDateTime.now().isAfter(end)).orElse(true);
 	}
 }

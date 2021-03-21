@@ -62,8 +62,9 @@ public class TaskController extends AbstractMUDController {
 		if(result.isPresent()) {
 			ITaskActor actor = result.get();
 			
-			if(actor.complete()) {
+			if(actor.isComplete()) {
 				//TODO: if the task is completed, mark it as completed
+				System.out.println("The Task is complete!");
 				
 				//TODO: effectuate the world-side changes
 			}

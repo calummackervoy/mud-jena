@@ -140,7 +140,7 @@ public abstract class AbstractTaskActor implements ITaskActor {
 		return Optional.of(Time.instantToLocalDateTime(end));
 	}
 	
-	public boolean complete() {
+	public boolean isComplete() {
 		//if the task has a complete time and that's passed, it's complete
 		//it's also complete if it doesn't have a complete time
 		return this.getTaskEndTime().map(end -> LocalDateTime.now().isAfter(end)).orElse(true);

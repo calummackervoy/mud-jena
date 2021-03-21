@@ -62,12 +62,8 @@ public class TaskController extends AbstractMUDController {
 		if(result.isPresent()) {
 			ITaskActor actor = result.get();
 			
-			if(actor.isComplete()) {
-				//TODO: if the task is completed, mark it as completed
-				System.out.println("The Task is complete!");
-				
-				//TODO: effectuate the world-side changes
-			}
+			//if the task is completed, mark it as completed
+			model = actor.complete();
 		
 			//return the task, complete or not
 			return Response.ok(this.serializeModelToTurtle(model)).build();

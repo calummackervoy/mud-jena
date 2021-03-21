@@ -48,11 +48,9 @@ public class ContentController {
 			final Resource r = m.getResource(res.getURI());
 			
 			System.out.println(r);
-			Model content = this.getDescriber(r)
-					.flatMap(describer -> describer.describe(r))
-					.orElse(null);
-			
-			if(content != null) result.add(content);
+			this.getDescriber(r)
+				.flatMap(describer -> describer.describe(r))
+				.ifPresent(content -> result.add(content));
 		}
 		
 		String responseData = result.isEmpty() ? null : modelToTurtle(result);

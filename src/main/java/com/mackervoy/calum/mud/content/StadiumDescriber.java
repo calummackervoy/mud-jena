@@ -22,6 +22,7 @@ public class StadiumDescriber extends AbstractDescriber {
 	public Optional<Model> describe(Model dataModel, String uri) {
 		//is there a match on?
 		Resource stadium = dataModel.getResource(uri);
+		//TODO: a custom iterator like "has events now" would be a nice way to simplify this code
 		StmtIterator iter = stadium.listProperties(MUDEvents.hasEvent);
 		
 		while(iter.hasNext()) {
@@ -32,11 +33,9 @@ public class StadiumDescriber extends AbstractDescriber {
 			if(beginning == null || end == null) continue;
 			
 			try {
-				LocalDateTime beginTime = LocalDateTime.parse(
-						beginning.getProperty(Time.inXSDDateTimeStamp).getString());
+				LocalDateTime beginTime = Time.instantToLocalDateTime(beginning);
 				if(beginTime != null) {
-					LocalDateTime endTime = LocalDateTime.parse(
-							end.getProperty(Time.inXSDDateTimeStamp).getString());
+					LocalDateTime endTime = Time.instantToLocalDateTime(end);
 					
 					if(LocalDateTime.now().isAfter(beginTime) && LocalDateTime.now().isBefore(endTime)) {
 						return Optional.of(contentFromVisualDescription("Thousands of people are in and outside the stadium. There is a lot of noise"));

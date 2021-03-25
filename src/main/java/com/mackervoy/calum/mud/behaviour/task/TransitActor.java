@@ -10,6 +10,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.RDF;
 
 import com.mackervoy.calum.mud.behaviour.Patch;
+import com.mackervoy.calum.mud.behaviour.Task;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 import com.mackervoy.calum.mud.vocabularies.MUDCharacter;
 import com.mackervoy.calum.mud.vocabularies.MUDLogic;
@@ -21,6 +22,7 @@ import com.mackervoy.calum.mud.vocabularies.MUDLogic;
 public class TransitActor extends AbstractTaskActor {
 	
 	public TransitActor() {
+		super(MUDLogic.Transit);
 		this.addTargetRDFType(MUDLogic.Transit.toString());
 	}
 	
@@ -35,14 +37,16 @@ public class TransitActor extends AbstractTaskActor {
 		// append a Task for each Character in the list
 		while(characters.hasNext()) {
 			Resource character = characters.next();
-			Patch patch = new Patch(this.taskDatasetItem, character);
+			String patchUri = this.taskDatasetItem.getNewResourceUri("endState");
+			this.model.add(Patch.getNewPatch(patchUri, character));
+			Resource patch = this.model.getResource(patchUri);
 			Resource insert = ResourceFactory.createResource(this.taskDatasetItem.getNewResourceUri("characterInsert"));
 			
 			this.model.add(insert, RDF.type, character.getPropertyResourceValue(RDF.type));
 			this.model.add(insert, MUD.locatedAt, destination);
 			
-			patch.addInsert(insert);
-			this.task.addPatch(patch);
+			this.model.add(patch, MUDLogic.inserts, insert);
+			this.model.add(this.task, MUDLogic.endState, patch);
 		}
 	}
 
@@ -54,9 +58,9 @@ public class TransitActor extends AbstractTaskActor {
 		//append endState changes for the Task, for each character
 		this.getCharacterPatches(request, destination);
 		
-		this.model.add(this.task.getResource(), RDF.type, MUDLogic.Transit);
+		this.model.add(this.task, RDF.type, MUDLogic.Transit);
 		
-		this.commitToDB();
+		this.save();
 		return this.taskDatasetItem.getUri();
 	}
 	

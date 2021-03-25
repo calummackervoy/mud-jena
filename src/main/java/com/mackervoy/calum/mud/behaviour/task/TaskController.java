@@ -54,6 +54,7 @@ public class TaskController extends AbstractMUDController {
 		Model model = ModelFactory.createDefaultModel();
 		model.read(taskUri);
 		Resource task = model.getResource(taskUri);
+		System.out.println(task);
 		
 		//get the provider for this type of task
 		TaskActorFactory factory = new TaskActorFactory();

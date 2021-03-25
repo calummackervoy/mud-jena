@@ -20,11 +20,13 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
 import org.apache.jena.reasoner.rulesys.Rule;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.vocabulary.RDF;
+import org.eclipse.jdt.internal.compiler.ast.ThisReference;
 
 import com.mackervoy.calum.mud.DatasetItem;
 import com.mackervoy.calum.mud.vocabularies.MUD;
@@ -44,10 +46,10 @@ public abstract class AbstractTaskActor implements ITaskActor {
 	private Set<String> targetRDFTypes;
 	
 	protected Model model;
-	protected Task task;
-	protected DatasetItem taskDatasetItem;
-	protected String insertsDatasetLocation;
-	protected String deletesDatasetLocation;
+	protected Resource task;
+	protected DatasetItem taskDatasetItem; // the graph containing the task
+	//protected String insertsDatasetLocation;
+	//protected String deletesDatasetLocation;
 	
 	public Set<String> getTargetRDFTypes() {
 		return this.targetRDFTypes;
@@ -64,12 +66,15 @@ public abstract class AbstractTaskActor implements ITaskActor {
 	/**
 	 * version of the constructor which creates a new dataset
 	 */
-	public AbstractTaskActor() {
+	public AbstractTaskActor(Resource taskImplements) {
 		this.targetRDFTypes = new HashSet<String>();
-		this.model = ModelFactory.createDefaultModel();
+		this.taskDatasetItem = Task.getNewTaskDataset();
+		this.model = this.taskDatasetItem.getModel();
 		
-		this.taskDatasetItem = TDBStore.TASK_ACTIONS.getNewDataset();
-		this.task = new Task(this.taskDatasetItem);
+		//create and initialise a new task dataset
+		String taskUri = this.taskDatasetItem.getNewResourceUri("task");
+		this.task = ResourceFactory.createResource(taskUri);
+		this.model.add(Task.getTaskProperties(this.taskDatasetItem, this.task, taskImplements));
 	}
 	
 	/**
@@ -77,10 +82,10 @@ public abstract class AbstractTaskActor implements ITaskActor {
 	 */
 	public AbstractTaskActor(String taskUri) {
 		this.targetRDFTypes = new HashSet<String>();
-		this.model = ModelFactory.createDefaultModel();
-		
 		this.taskDatasetItem = TDBStore.getDatasetItem(taskUri);
-		this.task = new Task(this.taskDatasetItem, taskUri);
+		this.model = this.taskDatasetItem.getModel();
+		
+		this.task = this.model.getResource(taskUri);
 	}
 	
 	/**
@@ -115,27 +120,12 @@ public abstract class AbstractTaskActor implements ITaskActor {
 		}
 	}
 	
-	protected void commitToDB() {
-		this.model.add(this.task.getModel());
-		
-		Dataset dataset = TDB2Factory.connectDataset(this.taskDatasetItem.getFileLocation());
-		try {
-			dataset.begin(ReadWrite.WRITE);
-			Model out = dataset.getDefaultModel();
-			out.add(this.model);
-			out.commit();
-		}
-		finally {
-			dataset.end();
-		}
-	}
-	
 	/**
 	 * @return the LocalDateTime when this task will end, or null if it doesn't have one set 
 	 * Default uses the Time ontology, so it's useful to override this if you want to use something else
 	 */
 	public Optional<LocalDateTime> getTaskEndTime() {
-		Resource end = this.task.getResource().getPropertyResourceValue(Time.hasEnd);
+		Resource end = this.task.getPropertyResourceValue(Time.hasEnd);
 		if(end == null) return Optional.empty();
 		
 		return Optional.of(Time.instantToLocalDateTime(end));
@@ -156,9 +146,13 @@ public abstract class AbstractTaskActor implements ITaskActor {
 	 */
 	public Model complete() {
 		if(this.isComplete()) {
-			this.model.add(this.task.getResource(), MUDLogic.isComplete, "true");
-			this.commitToDB();
+			this.model.add(this.task, MUDLogic.isComplete, "true");
+			this.save();
 		}
 		return this.model;
+	}
+	
+	protected void save() {
+		this.taskDatasetItem.writeModel(this.model);
 	}
 }

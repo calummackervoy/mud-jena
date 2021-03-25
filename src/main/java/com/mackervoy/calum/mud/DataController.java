@@ -29,29 +29,16 @@ public class DataController extends AbstractMUDController {
 	@GET
     @Produces("text/turtle")
     public Response get(@PathParam("any") List<PathSegment> segments) {
-		//parse inpu
+		// parses input into a file directory path
 		String datasetSubPath = "";
 		
 		for(int i = 0; i < segments.size(); i++) {
 			if(datasetSubPath.length() > 0) datasetSubPath += "/";
 			datasetSubPath += segments.get(i).toString();
 		}
-		
-		String datasetPath = MUDApplication.getRootDirectory() + datasetSubPath;
-		
-		//if the dataset is not in use, return 404
-		if(!TDBStore.inUseLocation(new File(datasetPath))) {
-			throw new NotFoundException();
-		}
-		
-    	Dataset dataset = TDB2Factory.connectDataset(datasetPath);
-    	
-    	// serialize response
-    	dataset.begin(ReadWrite.READ) ;
-	    Model m = dataset.getDefaultModel() ;
-	    String response = this.serializeModelToTurtle(m);
-        dataset.end();
-    	
+
+		// serializes the dataset into a response, or else raises a 404
+	    String response = this.serializeModelToTurtle(TDBStore.getDatasetItem(datasetSubPath).getModel());
         return Response.ok(response).build();
     }
 }

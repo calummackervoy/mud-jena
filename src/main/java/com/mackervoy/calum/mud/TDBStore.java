@@ -48,16 +48,29 @@ public class TDBStore {
 		}
 	}
 	
+	private final static String getFullFilePath(String filePath) {
+		String root = MUDApplication.getRootDirectory();
+		
+		//normalise style
+		if(filePath.startsWith("./")) filePath = filePath.substring(2);
+		if(root.startsWith("./")) root = root.substring(2);
+		
+		if(filePath.startsWith(root)) return filePath;
+		return root + filePath;
+	}
+	
 	/**
 	 * @param uriOrFilePath a URI or filesystem path for the dataset item
 	 * @return the DatasetItem found at this resource
 	 * @throws NotFoundException if it can't be found
+	 * example URI: http://localhost:8080/mud/world/#something
+	 * example file paths: ./mud/world/, /mud/world/ or world/
 	 */
 	public final static DatasetItem getDatasetItem(String uriOrFilePath) {
 		//convert a URI to a file system path
 		String filePath = getFilePathFromUri(uriOrFilePath).orElse(uriOrFilePath);
 		
-		if(!TDBStore.inUseLocation(new File(filePath))) {
+		if(!TDBStore.inUseLocation(new File(getFullFilePath(filePath)))) {
 			throw new NotFoundException("The given dataset is not in use!");
 		}
 		

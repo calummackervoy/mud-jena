@@ -10,8 +10,13 @@ package com.mackervoy.calum.mud;
 public abstract class AbstractFileStorageWrapper {
 	protected String path;
 	
+	private String cleanPath(String subPath) {
+		if(subPath.length() > 0 && !subPath.endsWith("/")) return subPath + "/";
+		return subPath;
+	}
+	
 	public AbstractFileStorageWrapper(String path) {
-		this.path = path;
+		this.path = this.cleanPath(path);
 	}
 	
 	public String getUri() {

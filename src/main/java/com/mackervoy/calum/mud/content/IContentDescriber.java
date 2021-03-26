@@ -12,5 +12,5 @@ import java.util.Optional;
  * It allows the implementing class to define rich content for a parameterised object
  */
 public interface IContentDescriber {
-	public Optional<Model> describe(Model dataModel, String uri);
+	public Optional<Model> describe(Resource r);
 }

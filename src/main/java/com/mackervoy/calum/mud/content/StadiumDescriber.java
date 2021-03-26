@@ -19,9 +19,8 @@ public class StadiumDescriber extends AbstractDescriber {
 	}
 
 	@Override
-	public Optional<Model> describe(Model dataModel, String uri) {
+	public Optional<Model> describe(Resource stadium) {
 		//is there a match on?
-		Resource stadium = dataModel.getResource(uri);
 		//TODO: a custom iterator like "has events now" would be a nice way to simplify this code
 		StmtIterator iter = stadium.listProperties(MUDEvents.hasEvent);
 		

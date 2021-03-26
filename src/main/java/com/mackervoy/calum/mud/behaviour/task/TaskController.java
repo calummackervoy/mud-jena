@@ -51,10 +51,10 @@ public class TaskController extends AbstractMUDController {
 	@GET
 	public Response get(@QueryParam("taskUri") String taskUri) {
 		//get the task referenced
+		//TODO: optimise by getting the dataset, reading from the URI is needlessly expensive
 		Model model = ModelFactory.createDefaultModel();
 		model.read(taskUri);
 		Resource task = model.getResource(taskUri);
-		System.out.println(task);
 		
 		//get the provider for this type of task
 		TaskActorFactory factory = new TaskActorFactory();

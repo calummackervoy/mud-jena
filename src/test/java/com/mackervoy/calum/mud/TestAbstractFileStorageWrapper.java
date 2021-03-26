@@ -1,17 +1,7 @@
 package com.mackervoy.calum.mud;
 
 import static org.junit.Assert.assertEquals;
-
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
-
-import junit.framework.Assert;
 
 public class TestAbstractFileStorageWrapper {
 	@Test

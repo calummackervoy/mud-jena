@@ -1,7 +1,11 @@
 package com.mackervoy.calum.mud;
 
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.tdb2.TDB2Factory;
@@ -11,6 +15,7 @@ import org.apache.jena.tdb2.TDB2Factory;
  * String accessors for the URI, File system location and for generating new resource Ids of a Dataset stored in the MUD TDB
  */
 public class DatasetItem extends AbstractFileStorageWrapper {
+	//TODO: make the name part a named model, not a whole dataset of its own
 	private String name;
 	
 	/**

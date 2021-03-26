@@ -51,7 +51,7 @@ public class TDBStore {
 	private final static String getFullFilePath(String filePath) {
 		String root = MUDApplication.getRootDirectory();
 		
-		//normalise style
+		// normalise style
 		if(filePath.startsWith("./")) filePath = filePath.substring(2);
 		if(root.startsWith("./")) root = root.substring(2);
 		
@@ -67,7 +67,8 @@ public class TDBStore {
 	 * example file paths: ./mud/world/, /mud/world/ or world/
 	 */
 	public final static DatasetItem getDatasetItem(String uriOrFilePath) {
-		//convert a URI to a file system path
+		
+		// convert a URI to a file system path
 		String filePath = getFilePathFromUri(uriOrFilePath).orElse(uriOrFilePath);
 		
 		if(!TDBStore.inUseLocation(new File(getFullFilePath(filePath)))) {

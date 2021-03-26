@@ -11,6 +11,16 @@ public abstract class AbstractFileStorageWrapper {
 	protected String path;
 	
 	private String cleanPath(String subPath) {
+		String root = MUDApplication.getRootDirectory();
+		
+		// normalise style
+		if(subPath.startsWith("./")) subPath = subPath.substring(2);
+		if(root.startsWith("./")) root = root.substring(2);
+		
+		// enforce relativity
+		if(subPath.startsWith(root)) subPath = subPath.substring(root.length());
+		
+		// enforce trailing /
 		if(subPath.length() > 0 && !subPath.endsWith("/")) return subPath + "/";
 		return subPath;
 	}

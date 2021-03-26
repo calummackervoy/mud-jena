@@ -21,14 +21,18 @@ import com.mackervoy.calum.mud.vocabularies.MUDLogic;
  */
 public class TransitActor extends AbstractTaskActor {
 	
-	public TransitActor() {
-		super(MUDLogic.Transit);
-		this.addTargetRDFType(MUDLogic.Transit.toString());
+	public static void registerTargetRDFTypes() {
+		registerTargetRDFType(MUDLogic.Transit.toString(), TransitActor.class);
 	}
 	
+	// new dataset constructor
+	public TransitActor() {
+		super(MUDLogic.Transit);
+	}
+	
+	// existing dataset constructor
 	public TransitActor(String taskUri) {
 		super(taskUri);
-		this.addTargetRDFType(MUDLogic.Transit.toString());
 	}
 	
 	private void getCharacterPatches(Model request, Resource destination) {

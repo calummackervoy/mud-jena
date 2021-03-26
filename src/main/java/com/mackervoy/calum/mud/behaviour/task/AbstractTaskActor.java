@@ -42,8 +42,9 @@ import com.mackervoy.calum.mud.behaviour.Task;
  * A Task Actor is an actor which is responsible for creating and completing a Task
  */
 public abstract class AbstractTaskActor implements ITaskActor {
-	// the RDF types which are provided by the child class
-	private Set<String> targetRDFTypes;
+	
+	//TODO: useful to store this information ?
+	//private final static String[] targetRdfTypes = {};
 	
 	protected Model model;
 	protected Resource task;
@@ -51,23 +52,21 @@ public abstract class AbstractTaskActor implements ITaskActor {
 	//protected String insertsDatasetLocation;
 	//protected String deletesDatasetLocation;
 	
-	public Set<String> getTargetRDFTypes() {
-		return this.targetRDFTypes;
-	}
+	/**
+	 * Register with the TaskActorFactory this class with its target RDF types
+	 * NOTE: should be implemented also in child classes. It's not possible in Java to make a method abstract and static,
+	 * since static methods cannot be overridden
+	 */
+	public static void registerTargetRDFTypes() { }
 	
-	protected boolean addTargetRDFType(String rdfType) {
-		if(!this.targetRDFTypes.add(rdfType)) return false;
-		
-		//register with the Factory that the class provides this RDF type
-		TaskActorFactory.register(rdfType, this.getClass());
-		return true;
+	protected static void registerTargetRDFType(String targetRDFType, Class<? extends AbstractTaskActor> taskActor) {
+		TaskActorFactory.register(targetRDFType, taskActor);
 	}
 	
 	/**
 	 * version of the constructor which creates a new dataset
 	 */
 	public AbstractTaskActor(Resource taskImplements) {
-		this.targetRDFTypes = new HashSet<String>();
 		this.taskDatasetItem = Task.getNewTaskDataset();
 		this.model = this.taskDatasetItem.getModel();
 		
@@ -81,7 +80,6 @@ public abstract class AbstractTaskActor implements ITaskActor {
 	 * version of the constructor which links to an existing (parameterised task)
 	 */
 	public AbstractTaskActor(String taskUri) {
-		this.targetRDFTypes = new HashSet<String>();
 		this.taskDatasetItem = TDBStore.getDatasetItem(taskUri);
 		this.model = this.taskDatasetItem.getModel();
 		

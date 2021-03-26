@@ -127,7 +127,7 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	}
 	
 	public static void registerActors() {
-		new TransitActor();
+		TransitActor.registerTargetRDFTypes();
 	}
 	
 	public MUDApplication() {

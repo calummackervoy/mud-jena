@@ -1,6 +1,7 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
 import java.io.ByteArrayOutputStream;
+import java.net.MalformedURLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
 import org.apache.jena.reasoner.rulesys.Rule;
 import org.apache.jena.tdb2.TDB2Factory;
@@ -31,7 +33,9 @@ import org.eclipse.jdt.internal.compiler.ast.ThisReference;
 import com.mackervoy.calum.mud.DatasetItem;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
+import com.mackervoy.calum.mud.vocabularies.MUDCharacter;
 import com.mackervoy.calum.mud.vocabularies.MUDLogic;
+import com.mackervoy.calum.mud.vocabularies.SolidTerms;
 import com.mackervoy.calum.mud.vocabularies.Time;
 import com.mackervoy.calum.mud.TDBStore;
 import com.mackervoy.calum.mud.behaviour.Task;
@@ -138,13 +142,48 @@ public abstract class AbstractTaskActor implements ITaskActor {
 		return this.getTaskEndTime().map(end -> LocalDateTime.now().isAfter(end)).orElse(true);
 	}
 	
+	protected void effectCompletedTaskEndState() {
+		// iterate over each patch
+		ResIterator patches = this.model.listResourcesWithProperty(RDF.type, SolidTerms.Patch);
+		
+		while(patches.hasNext()) {
+			Resource patch = patches.next();
+			Resource subject = patch.getPropertyResourceValue(SolidTerms.patches);
+			
+			try {
+				// will only update local resources
+				if(subject == null || !TDBStore.isLocalURI(subject.getURI())) continue;
+				
+				// get the subject model
+				DatasetItem subjectDatasetItem = TDBStore.getDatasetItem(subject.getURI());
+				Model subjectModel = subjectDatasetItem.getModel();
+				
+				// write each insert triple to the subject model
+				StmtIterator inserts = patch.listProperties(MUDLogic.inserts);
+				
+				while(inserts.hasNext()) {
+					Statement statement = inserts.next();
+					subjectModel.add(subject, statement.getPredicate(), statement.getObject());
+				}
+				
+				subjectDatasetItem.writeModel(subjectModel);
+			}
+			catch(MalformedURLException e) {
+				continue;
+			}
+		}
+	}
+	
 	/**
 	 * marks the task as completed in the database and effectuates the task endState
 	 * @return the completed Task graph
 	 */
 	public Model complete() {
 		if(this.isComplete()) {
+			// mark as complete
 			this.model.add(this.task, MUDLogic.isComplete, "true");
+			
+			this.effectCompletedTaskEndState();
 			this.save();
 		}
 		return this.model;

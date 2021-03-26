@@ -37,7 +37,7 @@ public class TDBStore {
 		try {
 			URL uri = new URL(uriInput);
 			
-			if(!uri.getHost().equals(new URL(MUDApplication.getSiteUrl()).getHost())) {
+			if(!TDBStore.isLocalURI(uriInput)) {
 				throw new NotFoundException("The given dataset is not hosted on this site!");
 			}
 			
@@ -82,5 +82,17 @@ public class TDBStore {
 		String collection = String.join("/", splitString);
 		
 		return new DatasetItem(collection, name);
+	}
+	
+	/**
+	 * @return true if the URI represents a local resource (if the host matches the site URL), false if not
+	 * @throws MalformedURLException 
+	 */
+	public static boolean isLocalURI(URL uri) throws MalformedURLException {
+		return uri.getHost().equals(new URL(MUDApplication.getSiteUrl()).getHost());
+	}
+	
+	public static boolean isLocalURI(String uri) throws MalformedURLException {
+		return TDBStore.isLocalURI(new URL(uri));
 	}
 }

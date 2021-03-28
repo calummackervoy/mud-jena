@@ -17,4 +17,6 @@ FROM tomcat:9.0.43-jdk11 as server
 COPY --from=maven_deps /app/target/mud.war /usr/local/tomcat/webapps/mud.war
 COPY --from=maven_deps /app/pom.xml /usr/local/tomcat/webapps/pom.xml
 
+EXPOSE 8080
+
 CMD ["catalina.sh", "run"]

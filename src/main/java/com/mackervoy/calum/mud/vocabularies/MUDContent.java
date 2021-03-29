@@ -23,5 +23,8 @@ public class MUDContent {
     { return ResourceFactory.createProperty( uri, local ); }
 
     public final static Resource Content = resource( "Content" );
-    public final static Property sight = property("sight");
+    public final static Property sees = property("sees");
+    public final static Property describes = property("describes");
+    public final static Property hasText = property("hasText");
+    public final static Property hasImage = property("hasImage");
 }

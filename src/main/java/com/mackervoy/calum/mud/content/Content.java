@@ -18,7 +18,8 @@ public class Content {
 	//TODO: when we support more kinds of content other than text use the builder pattern
 	public static Model getContentFromText(Resource agent, Resource targetObject, Property senseProperty, String textContent) {
 		Model model = ModelFactory.createDefaultModel();
-		Resource content = ResourceFactory.createResource();
+		//TODO: https://github.com/inrupt/solid-client-js/issues/948
+		Resource content = ResourceFactory.createResource("http://localhost:8080/mud/content/#fake-resource");
 		
 		model.add(content, RDF.type, MUDContent.Content);
 		model.add(content, MUDContent.hasText, textContent);

@@ -29,8 +29,8 @@ public class TestInitalisation {
     @Test
     public void testGeneratesModelIfReaderReturnsValidTurtle() throws IOException {
         StringBuilder settlementInTurtle = new StringBuilder();
-        File settlements = new File("/home/matttennison/development/multi-user-domain/mud-jena/settlements.ttl");
-        Scanner scanner = new Scanner(settlements);
+        File initialisationFile = new File("/home/matttennison/development/multi-user-domain/mud-jena/initialisation.ttl");
+        Scanner scanner = new Scanner(initialisationFile);
         while(scanner.hasNextLine()) {
             String data = scanner.nextLine();
             settlementInTurtle.append(data);

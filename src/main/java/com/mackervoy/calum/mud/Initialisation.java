@@ -16,9 +16,15 @@ public class Initialisation {
     }
 
     public void init(Model model) throws IOException {
-        Path initialisationFile = FileSystems.getDefault().getPath("/home/mud/settlements.ttl");
+        Path initialisationFile = FileSystems.getDefault().getPath(getInitialisationFile());
         String initialisationFileContents = this.reader.readFile(initialisationFile);
 
         model.read(new ByteArrayInputStream(initialisationFileContents.getBytes()), null, "TTL");
+    }
+
+    private String getInitialisationFile() {
+        String settlementsFile = System.getenv("initialisation_file");
+
+        return settlementsFile == null ? "/home/mud/initialisation.ttl" : settlementsFile;
     }
 }

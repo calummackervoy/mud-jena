@@ -9,7 +9,7 @@ RUN mvn clean
 RUN mvn dependency:go-offline
 
 ADD src/main src/main
-ADD initialisation.ttl settlements.ttl
+ADD initialisation.ttl initialisation.ttl
 
 RUN mvn package 
 

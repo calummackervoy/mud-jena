@@ -28,15 +28,15 @@ public class TestInitalisation {
 
     @Test
     public void testGeneratesModelIfReaderReturnsValidTurtle() throws IOException {
-        StringBuilder settlementInTurtle = new StringBuilder();
+        StringBuilder initialisationInTurtle = new StringBuilder();
         File initialisationFile = new File("/home/matttennison/development/multi-user-domain/mud-jena/initialisation.ttl");
         Scanner scanner = new Scanner(initialisationFile);
         while(scanner.hasNextLine()) {
             String data = scanner.nextLine();
-            settlementInTurtle.append(data);
+            initialisationInTurtle.append(data);
         }
         IReader readerMock = mock(IReader.class);
-        when(readerMock.readFile(any())).thenReturn(settlementInTurtle.toString());
+        when(readerMock.readFile(any())).thenReturn(initialisationInTurtle.toString());
 
         Initialisation initialisation = new Initialisation(readerMock);
         Model model = ModelFactory.createDefaultModel();

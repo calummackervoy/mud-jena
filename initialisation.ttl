@@ -1,0 +1,52 @@
+<http://localhost:8080/mud/settlements/#south_babylon_fc_stadium>
+        a       <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mudbuildings.ttl#Stadium> ;
+        <http://www.w3.org/2006/vcard/ns#fn>
+                "South Babylon Football Club Stadium" ;
+        <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl#primaryImageContent>
+                <https://www.arthistoryabroad.com/wp-content/uploads/2013/08/LOWRY-Football-Match.jpg> ;
+        <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl#primaryTextContent>
+                "A towering brickwork structure of an industrial appearance" ;
+        <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mudevents.ttl#hasEvent>
+                <http://localhost:8080/mud/settlements/#demo_football_match> .
+
+<http://localhost:8080/mud/settlements/#demo_football_match>
+        a       <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mudevents.ttl#FootballMatch> ;
+        <http://www.w3.org/2006/time#hasBeginning>
+                <http://localhost:8080/mud/settlements/#demo_football_match_begins> ;
+        <http://www.w3.org/2006/time#hasEnd>
+                <http://localhost:8080/mud/settlements/#demo_football_match_ends> .
+
+<http://localhost:8080/mud/settlements/#demo_football_match_begins>
+        a       <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp>
+                "2021-03-28T12:43:07.056722" .
+
+<http://localhost:8080/mud/settlements/#demo_football_match_ends>
+        a       <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp>
+                "2021-03-28T14:43:07.058671" .
+
+<http://localhost:8080/mud/settlements/#the_collective_night_club>
+        a       <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mudbuildings.ttl#Nightclub> ;
+        <http://www.w3.org/2006/vcard/ns#fn>
+                "The Collective Night Club" .
+
+<http://localhost:8080/mud/settlements/#babylon>
+        a       <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl#Settlement> ;
+        <http://www.w3.org/2006/vcard/ns#fn>
+                "Babylon" ;
+        <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl#hasBuilding>
+                <http://localhost:8080/mud/settlements/#south_babylon_fc_stadium> , <http://localhost:8080/mud/settlements/#the_collective_night_club> ;
+        <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl#population>
+                "8000000" ;
+        <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl#primaryTextContent>
+                "The Capital of the Babylonian Empire" .
+
+<http://localhost:8080/mud/settlements/#roric>
+        a       <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl#Settlement> ;
+        <http://www.w3.org/2006/vcard/ns#fn>
+                "Roric" ;
+        <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl#population>
+                "1000000" ;
+        <https://raw.githubusercontent.com/Multi-User-Domain/vocab/main/mud.ttl#primaryTextContent>
+                "The Second City of the Babylon region, but a cosmopolis in its own right, and an industrial powerhouse" .

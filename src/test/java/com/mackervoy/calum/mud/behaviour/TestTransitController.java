@@ -19,55 +19,55 @@ import org.junit.Test;
 
 import com.mackervoy.calum.mud.MUDApplication;
 import com.mackervoy.calum.mud.Random;
-import com.mackervoy.calum.mud.SettlementController;
+//import com.mackervoy.calum.mud.SettlementController;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 
 public class TestTransitController extends JerseyTest {
-	@Override
-    protected Application configure() {
-		MUDApplication.initFiles();
-		MUDApplication.initActions();
-        return new ResourceConfig(TransitController.class);
-    }
+//	@Override
+//    protected Application configure() {
+//		MUDApplication.initFiles();
+//		MUDApplication.initActions();
+//        return new ResourceConfig(TransitController.class);
+//    }
 	
 	@BeforeClass
     public static void beforeAllTestMethods() {
 		//register describers
-        MUDApplication.initActions();
+//        MUDApplication.initActions();
     }
 	
-	protected String getRandomLocalTaskUrl() {
-		return MUDApplication.TASK_LOCAL + Random.getRandomUUIDString();
-	}
+//	protected String getRandomLocalTaskUrl() {
+//		return MUDApplication.TASK_LOCAL + Random.getRandomUUIDString();
+//	}
 	
 	// test creation of new Transit task - no prior destination
-	@Test
-	public void testCreateTransit() {
-		Model request = ModelFactory.createDefaultModel();
-		Resource destination = ResourceFactory.createResource();
-		
-		Resource character = ResourceFactory.createResource("http://calum.mackervoy.com/example/#character");
-		request.add(character, RDF.type, MUD.Character);
-		
-		//TODO: getting URL resources to work with the Grizzly instance
-		Resource dest = ResourceFactory.createResource("http://calum.mackervoy.com/example/#destination");
-		// NOTE: a Building is of type mud:Locatable. POSTing this will require inference
-		//request.add(dest, RDF.type, MUD.Building);
-		request.add(dest, RDF.type, MUD.Locatable);
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        request.write(baos, "Turtle");
-		
-		Entity<String> reqEntity = Entity.entity(baos.toString(), "text/turtle");
-		Response response = target("/actions/transit/").request()
-		        .post(reqEntity);
-		    
-	    assertEquals("Http Response should be 201: ", Status.CREATED.getStatusCode(), response.getStatus());
-	    assertEquals("Http Content-Type should be: ", "text/turtle", response.getHeaderString(HttpHeaders.CONTENT_TYPE));
-	    
-	    String responseTurtle = response.readEntity(String.class);
-	    System.out.println(responseTurtle);
-	}
+//	@Test
+//	public void testCreateTransit() {
+//		Model request = ModelFactory.createDefaultModel();
+//		Resource destination = ResourceFactory.createResource();
+//
+//		Resource character = ResourceFactory.createResource("http://calum.mackervoy.com/example/#character");
+//		request.add(character, RDF.type, MUD.Character);
+//
+//		//TODO: getting URL resources to work with the Grizzly instance
+//		Resource dest = ResourceFactory.createResource("http://calum.mackervoy.com/example/#destination");
+//		// NOTE: a Building is of type mud:Locatable. POSTing this will require inference
+//		//request.add(dest, RDF.type, MUD.Building);
+//		request.add(dest, RDF.type, MUD.Locatable);
+//
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        request.write(baos, "Turtle");
+//
+//		Entity<String> reqEntity = Entity.entity(baos.toString(), "text/turtle");
+//		Response response = target("/actions/transit/").request()
+//		        .post(reqEntity);
+//
+//	    assertEquals("Http Response should be 201: ", Status.CREATED.getStatusCode(), response.getStatus());
+//	    assertEquals("Http Content-Type should be: ", "text/turtle", response.getHeaderString(HttpHeaders.CONTENT_TYPE));
+//
+//	    String responseTurtle = response.readEntity(String.class);
+//	    System.out.println(responseTurtle);
+//	}
 	
 	// TODO: test location is a subclass of MUD.Locatable
 	

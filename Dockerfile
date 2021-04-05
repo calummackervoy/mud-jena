@@ -9,6 +9,7 @@ RUN mvn clean
 RUN mvn dependency:go-offline
 
 ADD src/main src/main
+ADD initialisation.ttl initialisation.ttl
 
 RUN mvn package 
 
@@ -16,5 +17,10 @@ FROM tomcat:9.0.43-jdk11 as server
 
 COPY --from=maven_deps /app/target/mud.war /usr/local/tomcat/webapps/mud.war
 COPY --from=maven_deps /app/pom.xml /usr/local/tomcat/webapps/pom.xml
+
+ENV initialisation_file=/home/mud/initialisation.ttl
+COPY initialisation.ttl /home/mud/initialisation.ttl
+
+EXPOSE 8080
 
 CMD ["catalina.sh", "run"]

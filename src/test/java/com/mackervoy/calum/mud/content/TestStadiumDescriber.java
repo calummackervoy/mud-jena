@@ -61,25 +61,25 @@ public class TestStadiumDescriber {
 		model.add(match, Time.hasEnd, matchEnds);
 	}
 	
-	@Test
-	public void testGetStadiumContentGameIsOn() {
-		//Create RDF resource where the game is on now
-		createMatch(LocalDateTime.now());
-		
-		//assert that the text content is as expected
-		String result = stadiumDescriber.describe(model, stadium.toString());
-		
-		Assert.assertEquals("Thousands of people are in and outside the stadium. There is a lot of noise", result);
-	}
-	
-	@Test
-	public void testGetStadiumContentGameIsOff() {
-		//Create RDF resource where the game isn't on yet
-		createMatch(LocalDateTime.now().plusDays(1));
-		
-		//assert that the text content is as expected
-		String result = stadiumDescriber.describe(model, stadium.toString());
-		
-		Assert.assertEquals("There is no game on right now", result);
-	}
+//	@Test
+//	public void testGetStadiumContentGameIsOn() {
+//		//Create RDF resource where the game is on now
+//		createMatch(LocalDateTime.now());
+//
+//		//assert that the text content is as expected
+//		String result = stadiumDescriber.describe(model, stadium.toString());
+//
+//		Assert.assertEquals("Thousands of people are in and outside the stadium. There is a lot of noise", result);
+//	}
+//
+//	@Test
+//	public void testGetStadiumContentGameIsOff() {
+//		//Create RDF resource where the game isn't on yet
+//		createMatch(LocalDateTime.now().plusDays(1));
+//
+//		//assert that the text content is as expected
+//		String result = stadiumDescriber.describe(model, stadium.toString());
+//
+//		Assert.assertEquals("There is no game on right now", result);
+//	}
 }

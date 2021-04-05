@@ -2,6 +2,13 @@ package com.mackervoy.calum.mud;
 
 import com.mackervoy.calum.mud.behaviour.task.TransitActor;
 import com.mackervoy.calum.mud.content.*;
+import com.mackervoy.calum.mud.io.FileReader;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.tdb2.TDB2Factory;
+
+import java.io.IOException;
 
 public class MUDApplication extends javax.ws.rs.core.Application {
 	
@@ -17,8 +24,24 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	 * https://jena.apache.org/documentation/tdb/java_api.html
 	 */
 	public static void initWorld() {
-		Initialisation.initSettlement();
-		
+		Dataset dataset = TDB2Factory.connectDataset(TDBStore.WORLD.getFileLocation());
+		try {
+			dataset.begin(ReadWrite.WRITE);
+
+			if (!dataset.isEmpty()) {
+				dataset.abort();
+				return;
+			}
+
+			Model model = dataset.getDefaultModel();
+			new Initialisation(new FileReader()).init(model);
+
+			model.commit();
+
+			dataset.end();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		// TODO: we want to use Assembler method
 		//  commented out because was having 404 on the Jena vocab
 		//  on both http://jena.hpl.hp.com/2005/11/Assembler

@@ -1,44 +1,19 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
-import java.io.ByteArrayOutputStream;
-import java.net.MalformedURLException;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.function.Function;
-
-import javax.ws.rs.BadRequestException;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.jena.ontology.OntModel;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.ReadWrite;
-import org.apache.jena.rdf.model.InfModel;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
-import org.apache.jena.reasoner.rulesys.Rule;
-import org.apache.jena.tdb2.TDB2Factory;
-import org.apache.jena.vocabulary.RDF;
-import org.eclipse.jdt.internal.compiler.ast.ThisReference;
-
 import com.mackervoy.calum.mud.DatasetItem;
-import com.mackervoy.calum.mud.vocabularies.MUD;
-import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
-import com.mackervoy.calum.mud.vocabularies.MUDCharacter;
-import com.mackervoy.calum.mud.vocabularies.MUDLogic;
-import com.mackervoy.calum.mud.vocabularies.SolidTerms;
-import com.mackervoy.calum.mud.vocabularies.Time;
 import com.mackervoy.calum.mud.TDBStore;
 import com.mackervoy.calum.mud.behaviour.Task;
+import com.mackervoy.calum.mud.vocabularies.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
+import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.vocabulary.RDF;
+
+import javax.ws.rs.BadRequestException;
+import java.net.MalformedURLException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Calum Mackervoy

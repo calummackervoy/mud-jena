@@ -6,7 +6,6 @@ package com.mackervoy.calum.mud.content;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.function.Supplier;
 
 /**
  * @author Calum Mackervoy

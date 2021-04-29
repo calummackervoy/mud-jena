@@ -16,19 +16,19 @@ public class TestAbstractFileStorageWrapper {
 		
 		// test assumptions
 		int index = root.startsWith("./") ? 1 : 0;
-		assertEquals(expected.split("/")[index].length(), index > 0 ? (root.length() - 3) : root.length());
+		assertEquals(index > 0 ? (root.length() - 3) : root.length(), expected.split("/")[index].length());
 		
 		// with just subPath
-		assertEquals(new DatasetItem(subPath, name).getFileLocation(), expected);
+		assertEquals(expected, new DatasetItem(subPath, name).getFileLocation());
 		
 		// with subPath/
-		assertEquals(new DatasetItem(subPath + "/", name).getFileLocation(), expected);
+		assertEquals(expected, new DatasetItem(subPath + "/", name).getFileLocation());
 		
 		// with root/subPath/
-		assertEquals(new DatasetItem(root + subPath, name).getFileLocation(), expected);
+		assertEquals(expected, new DatasetItem(root + subPath, name).getFileLocation());
 		
 		// with ./root/subPath
-		if(!root.startsWith("./")) assertEquals(new DatasetItem("./" + root + subPath, name).getFileLocation(), expected);
-		else assertEquals(new DatasetItem(root.substring(2) + subPath, name).getFileLocation(), expected);
+		if(!root.startsWith("./")) assertEquals(expected, new DatasetItem("./" + root + subPath, name).getFileLocation());
+		else assertEquals(expected, new DatasetItem(root.substring(2) + subPath, name).getFileLocation());
 	}
 }

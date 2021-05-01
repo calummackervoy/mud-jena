@@ -31,8 +31,8 @@ import com.mackervoy.calum.mud.content.*;
 public class MUDApplication extends javax.ws.rs.core.Application {
 	
 	//TODO: configurable by web.xml
-	private final static String ROOT_DIRECTORY = "./mud/";
-	private final static String SITE_URL = "http://localhost:8080/mud/";
+	private static String ROOT_DIRECTORY = "./mud/";
+	private static String SITE_URL = "http://localhost:8080/mud/";
 	
 	public final static String getRootDirectory() { return ROOT_DIRECTORY; }
 	public final static String getSiteUrl() { return SITE_URL; }
@@ -131,6 +131,10 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	}
 	
 	public MUDApplication() {
+		//normalize directory/site parameters - ensure they have a trailing /
+		if(!ROOT_DIRECTORY.endsWith("/")) ROOT_DIRECTORY += "/";
+		if(!SITE_URL.endsWith("/")) SITE_URL += "/";
+		
 		MUDApplication.initWorld();
 		MUDApplication.registerDescribers();
 		MUDApplication.registerActors();

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.apache.commons.io.FilenameUtils;
 import javax.ws.rs.NotFoundException;
 
 /**
@@ -48,15 +49,18 @@ public class TDBStore {
 		}
 	}
 	
+	/**
+	 * @return a version of the parameterised file path which is relative from the applications' configured root directory
+	 *  and has no end separator
+	 */
 	private final static String getFullFilePath(String filePath) {
-		String root = MUDApplication.getRootDirectory();
 		
-		// normalise style
-		if(filePath.startsWith("./")) filePath = filePath.substring(2);
-		if(root.startsWith("./")) root = root.substring(2);
+		// normalise style - remove prefixes
+		String result = FilenameUtils.getPathNoEndSeparator(filePath) + "/" + FilenameUtils.getName(filePath);
+		String root =  FilenameUtils.getPath(MUDApplication.getRootDirectory());
 		
-		if(filePath.startsWith(root)) return filePath;
-		return root + filePath;
+		if(result.startsWith(root)) return result;
+		return root + result;
 	}
 	
 	/**
@@ -72,16 +76,10 @@ public class TDBStore {
 		String filePath = getFilePathFromUri(uriOrFilePath).orElse(uriOrFilePath);
 		
 		if(!TDBStore.inUseLocation(new File(getFullFilePath(filePath)))) {
-			throw new NotFoundException("The given dataset is not in use!");
+			throw new NotFoundException("The given dataset " + filePath + " is not in use!");
 		}
 		
-		String[] splitString = filePath.split("/");
-		String name = splitString[splitString.length - 1];
-		
-		splitString = Arrays.copyOfRange(splitString, 0, splitString.length - 1);
-		String collection = String.join("/", splitString);
-		
-		return new DatasetItem(collection, name);
+		return new DatasetItem(FilenameUtils.getPath(filePath), FilenameUtils.getName(filePath));
 	}
 	
 	/**

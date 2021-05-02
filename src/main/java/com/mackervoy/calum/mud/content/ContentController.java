@@ -6,6 +6,7 @@ package com.mackervoy.calum.mud.content;
 import com.mackervoy.calum.mud.AbstractMUDController;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
+import com.mackervoy.calum.mud.vocabularies.MUDCharacter;
 import com.mackervoy.calum.mud.vocabularies.MUDEvents;
 
 import java.io.ByteArrayOutputStream;
@@ -47,11 +48,18 @@ public class ContentController extends AbstractMUDController {
 			Model m = ModelFactory.createDefaultModel();
 			m.read(res.getURI());
 			final Resource r = m.getResource(res.getURI());
-			
 			System.out.println(r);
-			this.getDescriber(r)
-				.flatMap(describer -> describer.describe(r))
+			
+			//TODO: technically this should infer any subtype of foaf:Agent
+			ResIterator agents = request.listResourcesWithProperty(RDF.type, MUDCharacter.Character);
+			
+			while(agents.hasNext()) {
+				Resource agent = agents.next();
+				
+				this.getDescriber(r)
+				.flatMap(describer -> describer.describe(agent, r))
 				.ifPresent(content -> result.add(content));
+			}
 		}
 		
 		String responseData = result.isEmpty() ? null : serializeModelToTurtle(result);

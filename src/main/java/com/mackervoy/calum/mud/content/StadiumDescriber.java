@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.apache.jena.rdf.model.*;
 
 import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
+import com.mackervoy.calum.mud.vocabularies.MUDContent;
 import com.mackervoy.calum.mud.vocabularies.MUDEvents;
 import com.mackervoy.calum.mud.vocabularies.Time;
 
@@ -19,7 +20,7 @@ public class StadiumDescriber extends AbstractDescriber {
 	}
 
 	@Override
-	public Optional<Model> describe(Resource stadium) {
+	public Optional<Model> describe(Resource agent, Resource stadium) {
 		//is there a match on?
 		//TODO: a custom iterator like "has events now" would be a nice way to simplify this code
 		StmtIterator iter = stadium.listProperties(MUDEvents.hasEvent);
@@ -36,10 +37,11 @@ public class StadiumDescriber extends AbstractDescriber {
 				if(beginTime != null) {
 					LocalDateTime endTime = Time.instantToLocalDateTime(end);
 					
-					if(LocalDateTime.now().isAfter(beginTime) && LocalDateTime.now().isBefore(endTime)) {
-						return Optional.of(contentFromVisualDescription("Thousands of people are in and outside the stadium. There is a lot of noise"));
-					}
-					return Optional.of(contentFromVisualDescription("There is no game on right now"));
+					String textContent = "There is no game on right now";
+					if(LocalDateTime.now().isAfter(beginTime) && LocalDateTime.now().isBefore(endTime)) 
+						textContent = "Thousands of people are in and outside the stadium. There is a lot of noise";
+					
+					return Optional.of(Content.getContentFromText(agent, stadium, MUDContent.sees, textContent));
 				}
 			}
 			catch(LiteralRequiredException e) {

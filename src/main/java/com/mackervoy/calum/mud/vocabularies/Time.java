@@ -4,6 +4,7 @@
 package com.mackervoy.calum.mud.vocabularies;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -39,7 +40,16 @@ public class Time {
     public final static Property inXSDDateTimeStamp = property( "inXSDDateTimeStamp" );
     
     //TODO: bounds checking on this property
-    public final static LocalDateTime instantToLocalDateTime(Resource instant) {
+    public final static LocalDateTime resourceToLocalDateTime(Resource instant) {
     	return LocalDateTime.parse(instant.getProperty(Time.inXSDDateTimeStamp).getString());
+    }
+    
+    public final static java.time.Instant resourceToInstant(Resource instant) {
+    	try {
+    		return java.time.Instant.parse(instant.getProperty(Time.inXSDDateTimeStamp).getString());
+    	}
+    	catch(java.time.format.DateTimeParseException e) {
+    		return Time.resourceToLocalDateTime(instant).toInstant(ZoneOffset.UTC);
+    	}
     }
 }

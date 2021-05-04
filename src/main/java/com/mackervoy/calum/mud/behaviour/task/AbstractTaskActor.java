@@ -11,7 +11,7 @@ import org.apache.jena.vocabulary.RDF;
 
 import javax.ws.rs.BadRequestException;
 import java.net.MalformedURLException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,14 +98,14 @@ public abstract class AbstractTaskActor implements ITaskActor {
 	}
 	
 	/**
-	 * @return the LocalDateTime when this task will end, or null if it doesn't have one set 
+	 * @return the time.Instant when this task will end, or null if it doesn't have one set 
 	 * Default uses the Time ontology, so it's useful to override this if you want to use something else
 	 */
-	public Optional<LocalDateTime> getTaskEndTime() {
+	public Optional<Instant> getTaskEndTime() {
 		Resource end = this.task.getPropertyResourceValue(Time.hasEnd);
 		if(end == null) return Optional.empty();
 		
-		return Optional.of(Time.instantToLocalDateTime(end));
+		return Optional.of(Time.resourceToInstant(end));
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public abstract class AbstractTaskActor implements ITaskActor {
 	public boolean isComplete() {
 		//if the task has a complete time and that's passed, it's complete
 		//it's also complete if it doesn't have a complete time
-		return this.getTaskEndTime().map(end -> LocalDateTime.now().isAfter(end)).orElse(true);
+		return this.getTaskEndTime().map(end -> Instant.now().isAfter(end)).orElse(true);
 	}
 	
 	protected void effectCompletedTaskEndState() {

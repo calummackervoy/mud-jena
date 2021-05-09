@@ -48,9 +48,7 @@ public class ContentController extends AbstractMUDController {
 			Model m = ModelFactory.createDefaultModel();
 			m.read(res.getURI());
 			final Resource r = m.getResource(res.getURI());
-			System.out.println(r);
 			
-			//TODO: technically this should infer any subtype of foaf:Agent
 			ResIterator agents = request.listResourcesWithProperty(RDF.type, MUDCharacter.Character);
 			
 			while(agents.hasNext()) {
@@ -70,7 +68,6 @@ public class ContentController extends AbstractMUDController {
 		// check if I have a describer for the URI
 		DescriberFactory factory = new DescriberFactory();
 		IContentDescriber describer = factory.getDescriber(r.getURI());
-		System.out.println("found " + describer + " from " + r.getURI());
 		
 		// if I don't, try the RDF type
 		if (describer == null) {
@@ -82,6 +79,8 @@ public class ContentController extends AbstractMUDController {
 				describer = null;
 			}
 		}
+		
+		System.out.println("found " + describer + " from " + r.getURI());
 
 		return Optional.ofNullable(describer);
   }

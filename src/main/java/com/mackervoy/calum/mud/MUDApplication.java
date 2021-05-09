@@ -149,6 +149,7 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	 */
 	public static void registerDescribers() {
 		new StadiumDescriber();
+		new SPARQLDescriber();
 	}
 	
 	public static void registerActors() {

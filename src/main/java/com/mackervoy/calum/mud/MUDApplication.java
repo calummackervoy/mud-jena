@@ -115,12 +115,16 @@ public class MUDApplication extends javax.ws.rs.core.Application{
 	}
 	
 	public static void registerActors() {
-		new TransitActor();
+		TransitActor.registerTargetRDFTypes();
 	}
-	
+
 	public MUDApplication(@Context ServletContext context) {
 		SITE_URL = context.getInitParameter("com.mackervoy.calum.mud.BASE_URL");
 		ROOT_DIRECTORY = context.getInitParameter("com.mackervoy.calum.mud.ROOT_DIRECTORY");
+
+		//normalize directory/site parameters - ensure they have a trailing /
+		if(!ROOT_DIRECTORY.endsWith("/")) ROOT_DIRECTORY += "/";
+		if(!SITE_URL.endsWith("/")) SITE_URL += "/";
 		
 		MUDApplication.initWorld();
 		MUDApplication.registerDescribers();

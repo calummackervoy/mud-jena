@@ -3,7 +3,6 @@ package com.mackervoy.calum.mud.content;
 import java.util.List;
 import java.util.Optional;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.apache.jena.rdf.model.*;
@@ -22,6 +21,7 @@ public class StadiumDescriber extends AbstractDescriber {
 	@Override
 	public Optional<Model> describe(Resource agent, Resource stadium) {
 		//is there a match on?
+		//TODO: a custom iterator like "has events now" would be a nice way to simplify this code
 		StmtIterator iter = stadium.listProperties(MUDEvents.hasEvent);
 		
 		while(iter.hasNext()) {
@@ -32,14 +32,12 @@ public class StadiumDescriber extends AbstractDescriber {
 			if(beginning == null || end == null) continue;
 			
 			try {
-				LocalDateTime beginTime = LocalDateTime.parse(
-						beginning.getProperty(Time.inXSDDateTimeStamp).getString());
+				Instant beginTime = Time.resourceToInstant(beginning);
 				if(beginTime != null) {
-					LocalDateTime endTime = LocalDateTime.parse(
-							end.getProperty(Time.inXSDDateTimeStamp).getString());
+					Instant endTime = Time.resourceToInstant(end);
 					
 					String textContent = "There is no game on right now";
-					if(LocalDateTime.now().isAfter(beginTime) && LocalDateTime.now().isBefore(endTime)) 
+					if(Instant.now().isAfter(beginTime) && Instant.now().isBefore(endTime)) 
 						textContent = "Thousands of people are in and outside the stadium. There is a lot of noise";
 					
 					return Optional.of(Content.getContentFromText(agent, stadium, MUDContent.sees, textContent));

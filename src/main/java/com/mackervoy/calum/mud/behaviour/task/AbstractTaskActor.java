@@ -1,33 +1,19 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
-import java.io.ByteArrayOutputStream;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.ws.rs.BadRequestException;
-
-import java.util.List;
-
-import org.apache.jena.ontology.OntModel;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.ReadWrite;
-import org.apache.jena.rdf.model.InfModel;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
-import org.apache.jena.reasoner.rulesys.Rule;
-import org.apache.jena.tdb2.TDB2Factory;
-import org.apache.jena.vocabulary.RDF;
-
 import com.mackervoy.calum.mud.DatasetItem;
-import com.mackervoy.calum.mud.vocabularies.MUD;
-import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
 import com.mackervoy.calum.mud.TDBStore;
 import com.mackervoy.calum.mud.behaviour.Task;
+import com.mackervoy.calum.mud.vocabularies.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
+import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.vocabulary.RDF;
+
+import javax.ws.rs.BadRequestException;
+import java.net.MalformedURLException;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Calum Mackervoy
@@ -35,32 +21,48 @@ import com.mackervoy.calum.mud.behaviour.Task;
  * A Task Actor is an actor which is responsible for creating and completing a Task
  */
 public abstract class AbstractTaskActor implements ITaskActor {
-	// the RDF types which are provided by the child class
-	private Set<String> targetRDFTypes;
+	
+	//TODO: useful to store this information ?
+	//private final static String[] targetRdfTypes = {};
 	
 	protected Model model;
-	protected Task task;
-	protected DatasetItem taskDatasetItem;
-	protected String insertsDatasetLocation;
-	protected String deletesDatasetLocation;
+	protected Resource task;
+	protected DatasetItem taskDatasetItem; // the graph containing the task
+	//protected String insertsDatasetLocation;
+	//protected String deletesDatasetLocation;
 	
-	public Set<String> getTargetRDFTypes() {
-		return this.targetRDFTypes;
+	/**
+	 * Register with the TaskActorFactory this class with its target RDF types
+	 * NOTE: should be implemented also in child classes. It's not possible in Java to make a method abstract and static,
+	 * since static methods cannot be overridden
+	 */
+	public static void registerTargetRDFTypes() { }
+	
+	protected static void registerTargetRDFType(String targetRDFType, Class<? extends AbstractTaskActor> taskActor) {
+		TaskActorFactory.register(targetRDFType, taskActor);
 	}
 	
-	protected boolean addTargetRDFType(String rdfType) {
-		if(!this.targetRDFTypes.add(rdfType)) return false;
+	/**
+	 * version of the constructor which creates a new dataset
+	 */
+	public AbstractTaskActor(Resource taskImplements) {
+		this.taskDatasetItem = Task.getNewTaskDataset();
+		this.model = this.taskDatasetItem.getModel();
 		
-		//register with the Factory that the class provides this RDF type
-		TaskActorFactory.register(rdfType, this.getClass());
-		return true;
+		//create and initialise a new task dataset
+		String taskUri = this.taskDatasetItem.getNewResourceUri("task");
+		this.task = ResourceFactory.createResource(taskUri);
+		this.model.add(Task.getTaskProperties(this.taskDatasetItem, this.task, taskImplements));
 	}
 	
-	public AbstractTaskActor() {
-		this.targetRDFTypes = new HashSet<String>();
-		this.taskDatasetItem = TDBStore.TASK_ACTIONS.getNewDataset();
-		this.model = ModelFactory.createDefaultModel();
-		this.task = new Task(this.taskDatasetItem);
+	/**
+	 * version of the constructor which links to an existing (parameterised task)
+	 */
+	public AbstractTaskActor(String taskUri) {
+		this.taskDatasetItem = TDBStore.getDatasetItem(taskUri);
+		this.model = this.taskDatasetItem.getModel();
+		
+		this.task = this.model.getResource(taskUri);
 	}
 	
 	/**
@@ -95,18 +97,74 @@ public abstract class AbstractTaskActor implements ITaskActor {
 		}
 	}
 	
-	protected void commitToDB() {
-		this.model.add(this.task.getModel());
+	/**
+	 * @return the time.Instant when this task will end, or null if it doesn't have one set 
+	 * Default uses the Time ontology, so it's useful to override this if you want to use something else
+	 */
+	public Optional<Instant> getTaskEndTime() {
+		Resource end = this.task.getPropertyResourceValue(Time.hasEnd);
+		if(end == null) return Optional.empty();
 		
-		Dataset dataset = TDB2Factory.connectDataset(this.taskDatasetItem.getFileLocation());
-		try {
-			dataset.begin(ReadWrite.WRITE);
-			Model out = dataset.getDefaultModel();
-			out.add(this.model);
-			out.commit();
+		return Optional.of(Time.resourceToInstant(end));
+	}
+	
+	/**
+	 * @return true if the task is complete, false if not
+	 */
+	public boolean isComplete() {
+		//if the task has a complete time and that's passed, it's complete
+		//it's also complete if it doesn't have a complete time
+		return this.getTaskEndTime().map(end -> Instant.now().isAfter(end)).orElse(true);
+	}
+	
+	protected void effectCompletedTaskEndState() {
+		// iterate over each patch
+		ResIterator patches = this.model.listResourcesWithProperty(RDF.type, SolidTerms.Patch);
+		
+		while(patches.hasNext()) {
+			Resource patch = patches.next();
+			Resource subject = patch.getPropertyResourceValue(SolidTerms.patches);
+			
+			try {
+				// will only update local resources
+				if(subject == null || !TDBStore.isLocalURI(subject.getURI())) continue;
+				
+				// get the subject model
+				DatasetItem subjectDatasetItem = TDBStore.getDatasetItem(subject.getURI());
+				Model subjectModel = subjectDatasetItem.getModel();
+				
+				// write each insert triple to the subject model
+				StmtIterator inserts = patch.listProperties(MUDLogic.inserts);
+				
+				while(inserts.hasNext()) {
+					Statement statement = inserts.next();
+					subjectModel.add(subject, statement.getPredicate(), statement.getObject());
+				}
+				
+				subjectDatasetItem.writeModel(subjectModel);
+			}
+			catch(MalformedURLException e) {
+				continue;
+			}
 		}
-		finally {
-			dataset.end();
+	}
+	
+	/**
+	 * marks the task as completed in the database and effectuates the task endState
+	 * @return the completed Task graph
+	 */
+	public Model complete() {
+		if(this.isComplete()) {
+			// mark as complete
+			this.model.add(this.task, MUDLogic.isComplete, "true");
+			
+			this.effectCompletedTaskEndState();
+			this.save();
 		}
+		return this.model;
+	}
+	
+	protected void save() {
+		this.taskDatasetItem.writeModel(this.model);
 	}
 }

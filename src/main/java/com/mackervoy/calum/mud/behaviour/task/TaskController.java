@@ -1,6 +1,5 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
-import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.util.Optional;
@@ -13,6 +12,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 
 import com.mackervoy.calum.mud.AbstractMUDController;
 

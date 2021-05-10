@@ -30,7 +30,9 @@ public class MUDLogic {
     public final static Resource Action = resource( "Action" );
     public final static Resource Task = resource( "Task" );
     public final static Resource Transit = resource( "Transit" );
-    public final static Property endState = property( "endState" );    
+    public final static Property taskImplements = property( "taskImplements" );
+    public final static Property isComplete = property( "isComplete" );
+    public final static Property endState = property( "endState" );
     public final static Property inserts = property( "inserts" );
-    public final static Property deletes = property( "deletes" );  
+    public final static Property deletes = property( "deletes" );
 }

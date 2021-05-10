@@ -3,6 +3,8 @@
  */
 package com.mackervoy.calum.mud;
 
+import org.apache.commons.io.FilenameUtils;
+
 /**
  * @author Calum Mackervoy
  * An abstract class for any class which manages the returning of File system/URI locations for some path
@@ -10,8 +12,23 @@ package com.mackervoy.calum.mud;
 public abstract class AbstractFileStorageWrapper {
 	protected String path;
 	
+	private String cleanPath(String subPath) {
+		String root = FilenameUtils.normalize(FilenameUtils.getPath(MUDApplication.getRootDirectory()));
+		
+		// enforce trailing /
+		if(subPath.length() > 0 && !subPath.endsWith("/")) subPath += "/";
+		
+		// normalise style
+		subPath = FilenameUtils.normalize(FilenameUtils.getPath(subPath));
+		
+		// enforce relativity
+		if(subPath.startsWith(root)) subPath = subPath.substring(root.length());
+		
+		return subPath;
+	}
+	
 	public AbstractFileStorageWrapper(String path) {
-		this.path = path;
+		this.path = this.cleanPath(path);
 	}
 	
 	public String getUri() {

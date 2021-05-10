@@ -10,6 +10,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.RDF;
 
 import com.mackervoy.calum.mud.behaviour.Patch;
+import com.mackervoy.calum.mud.behaviour.Task;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 import com.mackervoy.calum.mud.vocabularies.MUDCharacter;
 import com.mackervoy.calum.mud.vocabularies.MUDLogic;
@@ -20,8 +21,18 @@ import com.mackervoy.calum.mud.vocabularies.MUDLogic;
  */
 public class TransitActor extends AbstractTaskActor {
 	
+	public static void registerTargetRDFTypes() {
+		registerTargetRDFType(MUDLogic.Transit.toString(), TransitActor.class);
+	}
+	
+	// new dataset constructor
 	public TransitActor() {
-		this.addTargetRDFType(MUDLogic.Transit.toString());
+		super(MUDLogic.Transit);
+	}
+	
+	// existing dataset constructor
+	public TransitActor(String taskUri) {
+		super(taskUri);
 	}
 	
 	private void getCharacterPatches(Model request, Resource destination) {
@@ -30,34 +41,31 @@ public class TransitActor extends AbstractTaskActor {
 		// append a Task for each Character in the list
 		while(characters.hasNext()) {
 			Resource character = characters.next();
-			Patch patch = new Patch(this.taskDatasetItem, character);
+			String patchUri = this.taskDatasetItem.getNewResourceUri("endState");
+			this.model.add(Patch.getNewPatch(patchUri, character));
+			Resource patch = this.model.getResource(patchUri);
 			Resource insert = ResourceFactory.createResource(this.taskDatasetItem.getNewResourceUri("characterInsert"));
 			
 			this.model.add(insert, RDF.type, character.getPropertyResourceValue(RDF.type));
 			this.model.add(insert, MUD.locatedAt, destination);
 			
-			patch.addInsert(insert);
-			this.task.addPatch(patch);
+			this.model.add(patch, MUDLogic.inserts, insert);
+			this.model.add(this.task, MUDLogic.endState, patch);
 		}
 	}
 
 	@Override
-	public Response act(Model request) {
+	public String act(Model request) {
 		//get the location from the request
 		Resource destination = this.getFirstResourceMatchingType(request, MUD.Locatable);
 		
 		//append endState changes for the Task, for each character
 		this.getCharacterPatches(request, destination);
 		
-		this.model.add(this.task.getResource(), RDF.type, MUDLogic.Transit);
+		this.model.add(this.task, RDF.type, MUDLogic.Transit);
 		
-		this.commitToDB();
-		return Response.created(URI.create(this.taskDatasetItem.getUri())).build();
-	}
-
-	@Override
-	public boolean complete(String uri) {
-		return false;
+		this.save();
+		return this.taskDatasetItem.getUri();
 	}
 	
 }

@@ -3,6 +3,7 @@
  */
 package com.mackervoy.calum.mud.content;
 
+import com.mackervoy.calum.mud.AbstractMUDController;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 import com.mackervoy.calum.mud.vocabularies.MUDBuildings;
 import com.mackervoy.calum.mud.vocabularies.MUDCharacter;
@@ -31,7 +32,7 @@ import org.apache.jena.vocabulary.RDF;
  * (e.g. "please describe this object")
  */
 @Path("/content/")
-public class ContentController {
+public class ContentController extends AbstractMUDController {
 	//NOTE: the ContentContoller POST must receives objects with RDF type set, or it will ignore them
 	@POST
 	public Response post(String requestBody) {
@@ -61,7 +62,7 @@ public class ContentController {
 			}
 		}
 		
-		String responseData = result.isEmpty() ? null : modelToTurtle(result);
+		String responseData = result.isEmpty() ? null : serializeModelToTurtle(result);
 		return Response.ok(responseData).build();
 	}
 	
@@ -83,11 +84,5 @@ public class ContentController {
 		}
 
 		return Optional.ofNullable(describer);
-  }
-
-  private String modelToTurtle(Model m) {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    m.write(baos, "Turtle");
-    return baos.toString();
   }
 }

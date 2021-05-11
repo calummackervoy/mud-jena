@@ -1,8 +1,5 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
-import javax.ws.rs.core.Response;
-import java.net.URI;
-
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
@@ -10,7 +7,6 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.RDF;
 
 import com.mackervoy.calum.mud.behaviour.Patch;
-import com.mackervoy.calum.mud.behaviour.Task;
 import com.mackervoy.calum.mud.vocabularies.MUD;
 import com.mackervoy.calum.mud.vocabularies.MUDCharacter;
 import com.mackervoy.calum.mud.vocabularies.MUDLogic;

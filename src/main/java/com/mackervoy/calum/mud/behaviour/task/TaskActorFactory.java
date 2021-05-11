@@ -1,17 +1,13 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Optional;
 
 import javax.ws.rs.BadRequestException;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.vocabulary.RDF;
 
 import com.mackervoy.calum.mud.vocabularies.MUDLogic;
 

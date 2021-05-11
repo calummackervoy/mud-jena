@@ -3,8 +3,6 @@
  */
 package com.mackervoy.calum.mud.behaviour.task;
 
-import javax.ws.rs.core.Response;
-
 import org.apache.jena.rdf.model.Model;
 
 /**

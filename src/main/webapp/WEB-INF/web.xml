@@ -3,7 +3,7 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>MUD Java Server</display-name>
   <servlet >
 	<servlet-name >MUD </servlet-name >
 	<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class >
@@ -21,6 +21,19 @@
 	<servlet-name >MUD </servlet-name >
 	<url-pattern >/* </url-pattern >
   </servlet-mapping >
+  
+  <!--MUD Parameters-->
+  <context-param>
+    <param-name>com.mackervoy.calum.mud.BASE_URL</param-name>
+    <param-value>http://localhost:8080/</param-value>
+    <description>The base URL which the site is deployed to e.g.</description>
+  </context-param>
+  
+  <context-param>
+  	<param-name>com.mackervoy.calum.mud.ROOT_DIRECTORY</param-name>
+  	<param-value>./mud/</param-value>
+  	<description>A file directory to be used as the root directory for MUD data stores</description>
+  </context-param>
   
   <!--CORS filter-->
   <filter>

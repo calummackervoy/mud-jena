@@ -6,7 +6,6 @@ package com.mackervoy.calum.mud;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Optional;
 
 import org.apache.commons.io.FilenameUtils;

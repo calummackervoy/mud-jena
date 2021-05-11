@@ -1,5 +1,9 @@
 package com.mackervoy.calum.mud.vocabularies;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.jena.rdf.model.* ;
 
 /*
@@ -30,4 +34,12 @@ public class MUDContent {
     public final static Property describes = property("describes");
     public final static Property hasText = property("hasText");
     public final static Property hasImage = property("hasImage");
+    
+    //Map of Sense classes to their property values
+    public static final Map<Resource, Property> SENSE_TO_PROPERTY;
+    static {
+        Map<Resource, Property> internalMap = new HashMap<Resource,Property>();
+        internalMap.put(Sight, sees);
+        SENSE_TO_PROPERTY = Collections.unmodifiableMap(internalMap);
+    }
 }

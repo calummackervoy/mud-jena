@@ -6,6 +6,7 @@ import javax.ws.rs.NotFoundException;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.query.*;
 
@@ -33,7 +34,7 @@ public class SPARQLDescriber extends AbstractDescriber {
 		}
 	}
 	
-	protected Optional<Model> getContentDescribingObject(DatasetItem contentDataset, Resource r) {
+	protected Optional<Model> getContentDescribingObject(DatasetItem contentDataset, Resource agent, Resource r) {
 		// Select all triples where the subject describes a character
 		// TODO: prioritise those triples which target *this character*
 		String queryString = "SELECT ?s WHERE { ?s <" + MUDContent.describes.toString() + "> <" + MUDCharacter.Character.toString() + "> }";
@@ -50,7 +51,14 @@ public class SPARQLDescriber extends AbstractDescriber {
 		    	
 		    	// read the full subject into the result graph
 		    	// TODO: this could probably be more efficient
-		    	result.add(ModelFactory.createDefaultModel().read(subject.getURI()));
+		    	Model content = ModelFactory.createDefaultModel().read(subject.getURI());
+		    	
+		    	// construct the appropriate sense from the content model
+		    	Resource sense = subject.getPropertyResourceValue(MUDContent.usesSense);
+		    	Property usesSense = sense == null ? MUDContent.sees : MUDContent.SENSE_TO_PROPERTY.get(sense);
+		    	
+		    	result.add(agent, usesSense, subject);
+		    	result.add(content);
 		    }
 		}
 		
@@ -59,6 +67,6 @@ public class SPARQLDescriber extends AbstractDescriber {
 	
 	public Optional<Model> describe(Resource agent, Resource r) {
 		return this.getContentDatasetItem()
-				.flatMap(datasetItem -> this.getContentDescribingObject(datasetItem, r));
+				.flatMap(datasetItem -> this.getContentDescribingObject(datasetItem, agent, r));
 	}
 }

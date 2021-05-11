@@ -3,20 +3,12 @@
  */
 package com.mackervoy.calum.mud.behaviour;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
 
-import com.mackervoy.calum.mud.DatasetItem;
-import com.mackervoy.calum.mud.vocabularies.MUD;
-import com.mackervoy.calum.mud.vocabularies.MUDLogic;
 import com.mackervoy.calum.mud.vocabularies.SolidTerms;
 
 /**

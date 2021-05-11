@@ -1,5 +1,9 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
+import javax.ws.rs.BadRequestException;
+
+import java.util.List;
+
 import com.mackervoy.calum.mud.DatasetItem;
 import com.mackervoy.calum.mud.TDBStore;
 import com.mackervoy.calum.mud.behaviour.Task;
@@ -9,10 +13,8 @@ import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
 import org.apache.jena.reasoner.rulesys.Rule;
 import org.apache.jena.vocabulary.RDF;
 
-import javax.ws.rs.BadRequestException;
 import java.net.MalformedURLException;
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 /**

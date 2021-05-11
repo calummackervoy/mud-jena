@@ -1,25 +1,14 @@
 package com.mackervoy.calum.mud;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import javax.servlet.ServletException;
+import javax.servlet.ServletContext;
+import javax.ws.rs.core.Context;
 
-import org.apache.jena.assembler.JA;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
-import org.apache.jena.tdb.base.file.Location;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.sparql.vocabulary.FOAF;
-import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.VCARD4;
@@ -28,11 +17,10 @@ import com.mackervoy.calum.mud.vocabularies.*;
 import com.mackervoy.calum.mud.behaviour.task.TransitActor;
 import com.mackervoy.calum.mud.content.*;
 
-public class MUDApplication extends javax.ws.rs.core.Application {
+public class MUDApplication extends javax.ws.rs.core.Application{
 	
-	//TODO: configurable by web.xml
-	private static String ROOT_DIRECTORY = "./mud/";
-	private static String SITE_URL = "http://localhost:8080/mud/";
+	private static String ROOT_DIRECTORY;
+	private static String SITE_URL;
 	
 	public final static String getRootDirectory() { return ROOT_DIRECTORY; }
 	public final static String getSiteUrl() { return SITE_URL; }
@@ -129,8 +117,11 @@ public class MUDApplication extends javax.ws.rs.core.Application {
 	public static void registerActors() {
 		TransitActor.registerTargetRDFTypes();
 	}
-	
-	public MUDApplication() {
+
+	public MUDApplication(@Context ServletContext context) {
+		SITE_URL = context.getInitParameter("com.mackervoy.calum.mud.BASE_URL");
+		ROOT_DIRECTORY = context.getInitParameter("com.mackervoy.calum.mud.ROOT_DIRECTORY");
+
 		//normalize directory/site parameters - ensure they have a trailing /
 		if(!ROOT_DIRECTORY.endsWith("/")) ROOT_DIRECTORY += "/";
 		if(!SITE_URL.endsWith("/")) SITE_URL += "/";

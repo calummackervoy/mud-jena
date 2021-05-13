@@ -50,11 +50,14 @@ Contact us if you have any difficulties!
 * In the Targeted Runtimes dialog, click (mark the checkbox) the newly-created Apache Tomcat v9.0 entry.
 * Click OK
 * Now the Project Explorer pane should show two entries: one is the project; the other is the test server for your project.
+* Please edit the file `server.xml` in the Tomcat server folder. Under `<Host>`, find the `<Context>` tag and edit the `path` attribute to be an empty string "" (`<Host ...> <Context path="" ... /> ... </Host>`. We need this because we use `/.well-known/..` in the [MUD Discovery](https://multi-user-domain.github.io/docs/02-server-discovery.html) specs, when a client is discovering the capabilities of a server.
 * Select Window / Show View / Servers. That should show your Tomcat test server, whether it needs to be updated (“republish”) and whether it’s running or stopped. Right click it and click "debug"
 
 ### Useful info to newcomers to Java servers/Tomcat
 
-The file **web.xml** holds the Tomcat configuration for the local server (src/main/webapp/WEB-INF/web.xml)
+The file **web.xml** holds the **Java Servlet** configuration for the local server (src/main/webapp/WEB-INF/web.xml)
+
+If you're running the application in Tomcat, you will have another **server.xml** configuration in the Tomcat server
 
 The file **pom.xml** holds the Maven dependencies for the project
 
@@ -91,6 +94,7 @@ docker run -p 8080:8080 multiuserdomain/mud-jena:<branch-name>
 * Check Export Source Files. Without this option, your html files would not be included in the .war file.
 * Click Finish
 * Add the project WAR file to your server
+* Please make sure that in your `server.xml` the `path` attribute in `<Host ...> <Context path="" ... /> ... </Host>` is set to an empty string "". This is because we use `/.well-known/` in the MUD specs
 
 # Contributing
 

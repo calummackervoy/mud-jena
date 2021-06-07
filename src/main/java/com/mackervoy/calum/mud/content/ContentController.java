@@ -23,7 +23,7 @@ import org.apache.jena.vocabulary.RDF;
  * Provides endpoints for client-side applications to request content
  * (e.g. "please describe this object")
  */
-@Path("/content/")
+@Path("/mud/content/")
 public class ContentController extends AbstractMUDController {
 	//NOTE: the ContentContoller POST must receives objects with RDF type set, or it will ignore them
 	@POST

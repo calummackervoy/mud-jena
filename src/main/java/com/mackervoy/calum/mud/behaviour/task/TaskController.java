@@ -21,7 +21,7 @@ import com.mackervoy.calum.mud.AbstractMUDController;
  * Provides endpoint for client-side applications to interface with Task Actions (actions which involve waiting)
  */
 
-@Path("/act/task/")
+@Path("/mud/act/task/")
 public class TaskController extends AbstractMUDController {
 	@POST
     public Response post(@QueryParam("taskUri") String taskUri, String requestBody) {

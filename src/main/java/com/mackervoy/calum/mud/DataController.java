@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
  * @author Calum Mackervoy
  * A generic endpoint for GETting datasets and resources
  */
-@Path("/{any: .*}")
+@Path("/mud/{any: .*}")
 public class DataController extends AbstractMUDController {
 	@GET
     @Produces("text/turtle")

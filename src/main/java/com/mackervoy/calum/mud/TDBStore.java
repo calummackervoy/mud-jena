@@ -17,6 +17,7 @@ import javax.ws.rs.NotFoundException;
  */
 public class TDBStore {
 	public final static DatasetCollection WORLD = new DatasetCollection("world/");
+	public final static DatasetCollection CONTENT = new DatasetCollection("content/");
 	public final static DatasetCollection ACTIONS = new DatasetCollection("actions/");
 	public final static DatasetCollection TASK_ACTIONS = new DatasetCollection("actions/tasks/");
 	

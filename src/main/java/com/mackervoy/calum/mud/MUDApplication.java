@@ -93,6 +93,31 @@ public class MUDApplication extends javax.ws.rs.core.Application{
 	}
 	
 	/**
+	 * A temporary function for initialising a demo content graph on startup
+	 */
+	protected static void initDemoContent() {
+		Dataset dataset = TDB2Factory.connectDataset(TDBStore.CONTENT.getFileLocation()) ;
+		try {
+			dataset.begin(ReadWrite.WRITE) ;
+			
+			if(!dataset.isEmpty()) {
+		    	dataset.abort();
+		    	return;
+		    }
+			
+			Model model = dataset.getDefaultModel();
+			
+			//TODO: configure from web.xml
+			model.read("https://calum.inrupt.net/public/collections/content.ttl");
+			
+			model.commit();
+		}
+		finally {
+			dataset.end();
+		}
+	}
+	
+	/**
 	 * init a TDB server storing world from configuration in Assembler
 	 * https://jena.apache.org/documentation/tdb/java_api.html
 	 */
@@ -112,6 +137,7 @@ public class MUDApplication extends javax.ws.rs.core.Application{
 	 */
 	public static void registerDescribers() {
 		new StadiumDescriber();
+		new SPARQLDescriber();
 	}
 	
 	public static void registerActors() {
@@ -127,6 +153,7 @@ public class MUDApplication extends javax.ws.rs.core.Application{
 		if(!SITE_URL.endsWith("/")) SITE_URL += "/";
 		
 		MUDApplication.initWorld();
+		MUDApplication.initDemoContent();
 		MUDApplication.registerDescribers();
 		MUDApplication.registerActors();
 	}

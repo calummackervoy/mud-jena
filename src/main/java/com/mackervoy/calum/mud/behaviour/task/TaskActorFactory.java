@@ -1,9 +1,9 @@
 package com.mackervoy.calum.mud.behaviour.task;
 
 import java.lang.reflect.Constructor;
-import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.ws.rs.BadRequestException;
 
@@ -16,7 +16,7 @@ import com.mackervoy.calum.mud.vocabularies.MUDLogic;
  * Resolves at runtime a TaskActor class for a requested RDF class
  */
 public class TaskActorFactory {
-	private static Dictionary<String, Class<? extends ITaskActor>> taskActors = 
+	private static Hashtable<String, Class<? extends ITaskActor>> taskActors = 
 			new Hashtable<String, Class<? extends ITaskActor>>();
 	
 	/*
@@ -61,5 +61,9 @@ public class TaskActorFactory {
 			e.printStackTrace();
 			return Optional.empty();
 		}
+	}
+	
+	public static Set<String> keySet() {
+		return taskActors.keySet();
 	}
 }

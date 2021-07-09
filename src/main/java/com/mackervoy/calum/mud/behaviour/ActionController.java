@@ -3,19 +3,18 @@ package com.mackervoy.calum.mud.behaviour;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.vocabulary.RDF;
 
-import java.io.StringReader;
 import java.util.Set;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.mackervoy.calum.mud.AbstractMUDController;
+import com.mackervoy.calum.mud.MUDApplication;
 import com.mackervoy.calum.mud.behaviour.task.TaskActorFactory;
+import com.mackervoy.calum.mud.vocabularies.MUDLogic;
 
 /**
  * @author Calum Mackervoy
@@ -24,6 +23,11 @@ import com.mackervoy.calum.mud.behaviour.task.TaskActorFactory;
 
 @Path("/mud/act/discover/")
 public class ActionController extends AbstractMUDController {
+	private String getActAtURL(Resource action) {
+		String base = MUDApplication.getSiteUrl() + "mud/act/";
+		return action.getPropertyResourceValue(RDF.type) == MUDLogic.Task ? base + "task/" : base;
+	}
+	
 	// pass a URI in the query string for an object
 	// expect to get back the configured endpoints for actions and tasks on this object
 	@POST
@@ -40,6 +44,7 @@ public class ActionController extends AbstractMUDController {
 			Model m = ModelFactory.createDefaultModel().read(key, "TURTLE");
 			Resource r = m.getResource(key);
 			result.add(r, RDF.type, r.getPropertyResourceValue(RDF.type));
+			result.add(r, MUDLogic.actAt, this.getActAtURL(r));
 		}
 		
 		String responseData = result.isEmpty() ? null : serializeModelToTurtle(result);

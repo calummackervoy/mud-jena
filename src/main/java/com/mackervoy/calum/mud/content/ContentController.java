@@ -28,8 +28,7 @@ public class ContentController extends AbstractMUDController {
 	//NOTE: the ContentContoller POST must receives objects with RDF type set, or it will ignore them
 	@POST
 	public Response post(String requestBody) {
-		final Model request = ModelFactory.createDefaultModel();
-		request.read(new StringReader(requestBody), "", "TURTLE");
+		final Model request = this.serializeTurtleRequestToModel(requestBody);
 	
 		//build the result model by iterating over each object in the scene and annotating a description
 		//TODO: for now we are just describing everything, later we will want to be able to optimise what is described
@@ -37,8 +36,7 @@ public class ContentController extends AbstractMUDController {
 		ResIterator resources = request.listResourcesWithProperty(RDF.type);
 		while(resources.hasNext()) {
 			Resource res = resources.next();
-			Model m = ModelFactory.createDefaultModel();
-			m.read(res.getURI());
+			Model m = ModelFactory.createDefaultModel().read(res.getURI());
 			final Resource r = m.getResource(res.getURI());
 			System.out.println(r);
 			
